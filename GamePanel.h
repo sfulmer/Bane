@@ -2,7 +2,7 @@
 
 #include "GameModel.h"
 #include "BaneController.h"
-#include "LoadMenuModel.h"
+#include "LoadMenuRenderer.h"
 #include <QFont>
 #include <QtGamepad/QGamepadManager>
 #include <QImage>
@@ -29,9 +29,9 @@ namespace net
                         Q_OBJECT
                         BaneController &mRefController;
                         bool mbInLoadingMenu;
-                        LoadMenuModel mObjMenuModel;
                         QGamepad *mPtrGamepad;
                         QGamepadManager *mPtrManager;
+                        LoadMenuRenderer mObjMenu;
                         qint64 miFrame;
                         QSharedPointer<QFont> mPtrTitleFont;
                         QTimer *mTimerEvents;
@@ -51,7 +51,7 @@ namespace net
                         qint64 getFrame();
                         QImage &getGameBoardImage();
                         QGamepadManager *getGamePadManager();
-                        LoadMenuModel &getMenuModel();
+                        LoadMenuRenderer &getMenu();
                         GameModel &getModel();
                         QFont &getTitleFont();
                         void initControls();

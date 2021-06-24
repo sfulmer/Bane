@@ -18,6 +18,13 @@ LoadMenuModel::LoadMenuModel(const LoadMenuModel &refCopy)
 LoadMenuModel::~LoadMenuModel()
 { }
 
+void LoadMenuModel::addOption(const QString &sOption)
+{
+    getOptions().push_back(sOption);
+
+    setSelectedIndex(0);
+}
+
 QList<QString> &LoadMenuModel::getOptions() const
 {
     return(const_cast<LoadMenuModel &>(*this).mLstOptions);

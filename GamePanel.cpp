@@ -1,6 +1,7 @@
 #include "BaneApp.h"
 #include "GamePanel.h"
 #include "GameWindow.h"
+#include "LoadMenuRenderer.h"
 #include <QDebug>
 #include <QFontDatabase>
 #include <QPaintEvent>
@@ -107,9 +108,9 @@ QGamepadManager *GamePanel::getGamePadManager()
     return(mPtrManager);
 }
 
-LoadMenuModel &GamePanel::getMenuModel()
+LoadMenuRenderer &GamePanel::getMenu()
 {
-    return(mObjMenuModel);
+    return(mObjMenu);
 }
 
 GameModel &GamePanel::getModel()
@@ -183,12 +184,8 @@ void GamePanel::paintEvent(QPaintEvent *event)
         }
 
     if(isInLoadingMenu())
-        {
-        painter.setPen(QColor(0xa4, 0xbb, 0xde));
-        painter.drawText(50, 50, "New Game");
-        painter.drawText(50, 75, "Load Game");
-        painter.drawText(50, 100, "Clear Saved Games");
-        }
+        getMenu().render(painter);
+
     painter.restore();
 }
 
