@@ -25,6 +25,7 @@ namespace net
                             LoadMenuModel(const LoadMenuModel &refCopy);
                             ~LoadMenuModel();
 
+                            void addOption(const QString &sOption);
                             QList<QString> &getOptions() const;
                             unsigned getSelectedIndex() const;
                             void setOptions(const QList<QString> &lstOptions);

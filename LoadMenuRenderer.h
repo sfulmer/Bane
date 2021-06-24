@@ -19,12 +19,13 @@ namespace net
                     {
                         LoadMenuModel mObjModel;
                     public:
+                        LoadMenuRenderer();
                         LoadMenuRenderer(const LoadMenuModel &refModel);
                         LoadMenuRenderer(const LoadMenuRenderer &refCopy);
                         ~LoadMenuRenderer();
 
                         LoadMenuModel &getModel() const;
-                        void render(const QPainter &refPainter);
+                        void render(QPainter &refPainter);
                         void setModel(const LoadMenuModel &refModel);
                     };
                 }
