@@ -38,6 +38,22 @@ Point &Party::getPosition()
     return(*mPtrPosition);
 }
 
+void Party::setCharacters(const QList<Character> &lstCharacters)
+{
+    mLstCharacters = lstCharacters;
+
+    setChanged();
+    notifyObservers("Characters");
+}
+
+void Party::setInventory(const QMap<Item, unsigned> mapInventory)
+{
+    mMapInventory = mapInventory;
+
+    setChanged();
+    notifyObservers("Inventory");
+}
+
 void Party::setMoney(const quint64 uiMoney)
 {
     muiMoney = uiMoney;

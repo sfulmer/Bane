@@ -31,8 +31,8 @@ void LoadMenuRenderer::render(QPainter &refPainter)
 
     refPainter.save();
 
-    for(QString sOption : getModel().getOptions())
-        refPainter.drawText(QPoint(50, iY *= 50), sOption);
+    for(QString &sOption : getModel().getOptions())
+        refPainter.drawText(QPoint(50, iY += 25), sOption);
 
     refPainter.restore();
 }

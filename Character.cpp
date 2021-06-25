@@ -103,7 +103,6 @@ Character &Character::operator=(const Character &refCopy)
     setConstitution(refCopy.getConstitution());
     setDexterity(refCopy.getDexterity());
     setIntelligence(refCopy.getIntelligence());
-    setPosition(const_cast<Character &>(refCopy).getPosition());
     setStrength(refCopy.getStrength());
 
     return(*this);
@@ -115,7 +114,6 @@ bool Character::operator==(const Character &refOther) const
             &&  (getConstitution() == refOther.getConstitution())
             &&  (getDexterity() == refOther.getDexterity())
             &&  (getIntelligence() == refOther.getIntelligence())
-            &&  (const_cast<Character &>(*this).getPosition() == const_cast<Character &>(refOther).getPosition())
             &&  (getStrength() == refOther.getStrength()));
 }
 

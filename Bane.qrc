@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/fonts">
-        <file alias="S">Shadow of the Deads.ttf</file>
+        <file alias="Shadow of the Deads.ttf">resources/fonts/Shadow of the Deads.ttf</file>
     </qresource>
 </RCC>

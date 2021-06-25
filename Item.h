@@ -38,6 +38,10 @@ namespace net
                         Item &operator=(const Item &refCopy);
                         bool operator==(const Item &refOther) const;
                         bool operator!=(const Item &refOther) const;
+                        bool operator>(const Item &refOther) const;
+                        bool operator>=(const Item &refOther) const;
+                        bool operator<(const Item &refOther) const;
+                        bool operator<=(const Item &refOther) const;
                     };
                 }
             }

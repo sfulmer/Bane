@@ -4,6 +4,7 @@
 #include "LoadMenuRenderer.h"
 #include <QDebug>
 #include <QFontDatabase>
+#include <QFontMetrics>
 #include <QPaintEvent>
 #include <QPainter>
 #include <QtGamepad/QGamepad>
@@ -169,6 +170,7 @@ void GamePanel::keyPressEvent(QKeyEvent *event)
 void GamePanel::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
+    const QFont &font = painter.font();
 
     painter.setRenderHint(QPainter::RenderHint::Antialiasing);
 
@@ -176,12 +178,21 @@ void GamePanel::paintEvent(QPaintEvent *event)
 
     painter.fillRect(event->rect(), QColor(0, 0, 0));
 
-    if(getFrame() == 0)
+    if(getFrame() <= 0)
         {
+        QFontMetrics metrics(getTitleFont());
+        QSize szTitle = metrics.size(Qt::TextSingleLine, "BANE");
+        unsigned uiWidth = event->rect().width(), uiHeight = event->rect().height();
+
+        uiWidth = (uiWidth - szTitle.width()) / 2;
+        uiHeight = (uiHeight - szTitle.height()) / 2;
+
         painter.setPen(QColor(0xf9, 0xf9, 0xf9));
         painter.setFont(getTitleFont());
-        painter.drawText(QPoint(0, 0), "BANE");
+        painter.drawText(QPoint(uiWidth, uiHeight), "BANE");
         }
+
+    painter.setFont(font);
 
     if(isInLoadingMenu())
         getMenu().render(painter);

@@ -88,7 +88,7 @@ GameWindow::GameWindow(QWidget *parent)
     :   GameWindow(parent, static_cast<BaneApp *>(qApp)->getController())
 { }
 
-GameWindow::GameWindow(QWidget *parent, PacManController &refController)
+GameWindow::GameWindow(QWidget *parent, BaneController &refController)
     :   QMainWindow(parent)
     ,   mPnlMain(nullptr)
     ,   mRefController(refController)

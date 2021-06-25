@@ -10,6 +10,10 @@ Target::Target(const Spell &refSpell)
     getSpells().push_back(const_cast<Spell *>(&refSpell));
 }
 
+Target::Target(const QList<Spell *> lstSpells)
+    :   mLstSpells(lstSpells)
+{ }
+
 Target::Target(const Target &refCopy)
     :   Target(refCopy.getSpells())
 { }

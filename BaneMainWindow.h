@@ -6,6 +6,8 @@
 #include <QMainWindow>
 #include <QMenu>
 
+using net::draconia::games::bane::BaneController;
+
 namespace net
 {
     namespace draconia
@@ -22,14 +24,14 @@ namespace net
                         GamePanel *mPnlMain;
                         BaneController &mRefController;
                         QAction *mActExit;
-                        QMenu *mMnuPacMan;
+                        QMenu *mMnuBane;
                     protected:
                         void closeEvent(QCloseEvent *event);
                         void exitClicked();
+                        QMenu *getBaneMenu();
                         BaneController &getController();
                         QAction *getExitAction();
                         GamePanel *getMainPanel();
-                        QMenu *getPacManMenu();
                         void initControls();
                         void initMenus();
                         void initWindow();

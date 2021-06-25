@@ -58,7 +58,7 @@ void MenuOption::setVisible(const bool bVisible)
 
 MenuOption &MenuOption::operator=(const MenuOption &refCopy)
 {
-    setIndex(refCopy.getIndex())
+    setIndex(refCopy.getIndex());
     setText(refCopy.getText());
     setVisible(refCopy.isVisible());
 
@@ -68,7 +68,10 @@ MenuOption &MenuOption::operator=(const MenuOption &refCopy)
 bool MenuOption::operator==(const MenuOption &refOther) const
 {
     return  (   (getText() == refOther.getText())
-            &&)(getIndex() == refOther.getIndex())
-        &&
+            &&  (getIndex() == refOther.getIndex()));
 }
+
 bool MenuOption::operator!=(const MenuOption &refOther) const
+{
+    return(!operator==(refOther));
+}

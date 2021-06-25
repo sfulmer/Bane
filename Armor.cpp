@@ -24,7 +24,7 @@ unsigned Armor::getModifier() const
 
 QString &Armor::getName() const
 {
-    return(msName);
+    return(const_cast<Armor &>(*this).msName);
 }
 
 Armor::Types Armor::getType() const

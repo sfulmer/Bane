@@ -34,12 +34,12 @@ int Item::getCost() const
 
 QString &Item::getName() const
 {
-    return(msName);
+    return(const_cast<Item &>(*this).msName);
 }
 
 QImage &Item::getThumbnail() const
 {
-    return(mImgThumbnail);
+    return(const_cast<Item &>(*this).mImgThumbnail);
 }
 
 void Item::setCost(const int iCost)
@@ -85,4 +85,24 @@ bool Item::operator==(const Item &refOther) const
 bool Item::operator!=(const Item &refOther) const
 {
     return(!operator==(refOther));
+}
+
+bool Item::operator>(const Item &refOther) const
+{
+    return(getName() > refOther.getName());
+}
+
+bool Item::operator>=(const Item &refOther) const
+{
+    return(getName() >= refOther.getName());
+}
+
+bool Item::operator<(const Item &refOther) const
+{
+    return(getName() < refOther.getName());
+}
+
+bool Item::operator<=(const Item &refOther) const
+{
+    return(getName() <= refOther.getName());
 }

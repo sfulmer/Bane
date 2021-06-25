@@ -27,8 +27,8 @@ void BaneApp::showMainWindow()
 
 BaneApp::BaneApp(int argc, char *argv[])
     :   QApplication(argc, argv)
-    //,   mWndGame(nullptr)
-    //,   mObjController(*this)
+    ,   mWndGame(nullptr)
+    ,   mObjController(*this)
 {
     setArguments(argc, argv);
 }
@@ -50,12 +50,12 @@ QList<QString> &BaneApp::getArguments() const
     return(const_cast<BaneApp &>(*this).mLstArgs);
 }
 
-/*BaneController &BaneApp::getController()
+BaneController &BaneApp::getController()
 {
     return(mObjController);
-}*/
+}
 
-/*GameWindow &PacManApp::getMainWindow()
+GameWindow &BaneApp::getMainWindow()
 {
     return(mWndGame);
-}*/
+}
