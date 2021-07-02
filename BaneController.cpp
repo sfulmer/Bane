@@ -12,6 +12,9 @@ BaneController::BaneController(BaneApp &refApp)
     :   mRefApp(refApp)
 { }
 
+BaneController::~BaneController()
+{ }
+
 void BaneController::exit()
 {
     getApplication().exit();
@@ -20,4 +23,9 @@ void BaneController::exit()
 GameModel &BaneController::getModel()
 {
     return(mObjModel);
+}
+
+QList<GameModel> &BaneController::getSavedGames() const
+{
+    return(const_cast<BaneController &>(*this).mLstSavedGames);
 }

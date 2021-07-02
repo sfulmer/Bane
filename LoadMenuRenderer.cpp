@@ -1,12 +1,16 @@
+#include "BaneApp.h"
+#include "LoadMenuOption.h"
 #include "LoadMenuRenderer.h"
 
 using namespace net::draconia::games::bane::ui;
+using net::draconia::games::bane::ui::model::LoadMenuOption;
 
 LoadMenuRenderer::LoadMenuRenderer()
 {
-    mObjModel.addOption("New Game");
-    mObjModel.addOption("Load Game");
-    mObjModel.addOption("Options/Settings");
+    mObjModel.addOption(LoadMenuOption(0,"New Game", true));
+    mObjModel.addOption(LoadMenuOption(1, "Load Game", true));
+    mObjModel.addOption(LoadMenuOption(2, "Options/Settings", true));
+    mObjModel.addOption(LoadMenuOption(3, "Exit", true));
 }
 
 LoadMenuRenderer::LoadMenuRenderer(const LoadMenuModel &refModel)
@@ -20,19 +24,36 @@ LoadMenuRenderer::LoadMenuRenderer(const LoadMenuRenderer &refCopy)
 LoadMenuRenderer::~LoadMenuRenderer()
 { }
 
+BaneController &LoadMenuRenderer::getController() const
+{
+    return(static_cast<BaneApp *>(qApp)->getController());
+}
+
 LoadMenuModel &LoadMenuRenderer::getModel() const
 {
     return(const_cast<LoadMenuRenderer &>(*this).mObjModel);
 }
 
-void LoadMenuRenderer::render(QPainter &refPainter)
+void LoadMenuRenderer::render(QPainter &refPainter, const QPoint &ptTopLeft)
 {
-    unsigned iY = 50;
+    unsigned iY = 50 + ptTopLeft.y(), uiIndex = 0;
 
     refPainter.save();
 
-    for(QString &sOption : getModel().getOptions())
-        refPainter.drawText(QPoint(50, iY += 25), sOption);
+    for(LoadMenuOption objOption : getModel().getOptions())
+        {
+        iY += 20;
+
+        refPainter.setPen(QColor(0xf9, 0xf9, 0xf9));
+
+        if(getModel().getSelectedIndex() == uiIndex++)
+            refPainter.drawText(QPoint(ptTopLeft.x() - 15, iY), "►");
+
+        if(!objOption.isEnabled())
+            refPainter.setPen(QColor(0x88, 0x88, 0x88));
+
+        refPainter.drawText(QPoint(ptTopLeft.x(), iY), objOption.getName());
+        }
 
     refPainter.restore();
 }

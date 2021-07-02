@@ -20,6 +20,7 @@ SOURCES += \
     GameWindow.cpp \
     Item.cpp \
     LoadMenuModel.cpp \
+    LoadMenuOption.cpp \
     LoadMenuRenderer.cpp \
     Menu.cpp \
     MenuOption.cpp \
@@ -47,6 +48,7 @@ HEADERS += \
     GameWindow.h \
     Item.h \
     LoadMenuModel.h \
+    LoadMenuOption.h \
     LoadMenuRenderer.h \
     Menu.h \
     MenuOption.h \

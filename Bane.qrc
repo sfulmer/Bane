@@ -2,4 +2,8 @@
     <qresource prefix="/fonts">
         <file alias="Shadow of the Deads.ttf">resources/fonts/Shadow of the Deads.ttf</file>
     </qresource>
+    <qresource prefix="/images">
+        <file alias="Scene 1.png">resources/images/Scene 1.png</file>
+        <file alias="MainChar.png">resources/images/MainChar.png</file>
+    </qresource>
 </RCC>

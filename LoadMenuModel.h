@@ -1,5 +1,6 @@
 #pragma once
 
+#include "LoadMenuOption.h"
 #include <QList>
 #include <QString>
 
@@ -17,18 +18,19 @@ namespace net
                     {
                         class LoadMenuModel
                         {
-                            QList<QString> mLstOptions;
+                            QList<LoadMenuOption> mLstOptions;
                             unsigned muiSelectedIndex;
                         public:
                             LoadMenuModel();
-                            LoadMenuModel(const QList<QString> &lstOptions, const unsigned &uiSelectedOption = 0);
+                            LoadMenuModel(const QList<LoadMenuOption> &lstOptions, const unsigned &uiSelectedOption = 0);
                             LoadMenuModel(const LoadMenuModel &refCopy);
                             ~LoadMenuModel();
 
                             void addOption(const QString &sOption);
-                            QList<QString> &getOptions() const;
+                            void addOption(const LoadMenuOption &objOption);
+                            QList<LoadMenuOption> &getOptions() const;
                             unsigned getSelectedIndex() const;
-                            void setOptions(const QList<QString> &lstOptions);
+                            void setOptions(const QList<LoadMenuOption> &lstOptions);
                             void setSelectedIndex(const unsigned uiIndex);
 
                             LoadMenuModel &operator=(const LoadMenuModel &refCopy);

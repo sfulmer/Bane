@@ -6,7 +6,7 @@ LoadMenuModel::LoadMenuModel()
     :   muiSelectedIndex(0)
 { }
 
-LoadMenuModel::LoadMenuModel(const QList<QString> &lstOptions, const unsigned &uiSelectedOption)
+LoadMenuModel::LoadMenuModel(const QList<LoadMenuOption> &lstOptions, const unsigned &uiSelectedOption)
     :   mLstOptions(lstOptions)
     ,   muiSelectedIndex(uiSelectedOption)
 { }
@@ -20,12 +20,19 @@ LoadMenuModel::~LoadMenuModel()
 
 void LoadMenuModel::addOption(const QString &sOption)
 {
-    getOptions().push_back(sOption);
+    getOptions().push_back(LoadMenuOption(getOptions().length(), sOption, true));
 
     setSelectedIndex(0);
 }
 
-QList<QString> &LoadMenuModel::getOptions() const
+void LoadMenuModel::addOption(const LoadMenuOption &objOption)
+{
+    getOptions().push_back(objOption);
+
+    setSelectedIndex(0);
+}
+
+QList<LoadMenuOption> &LoadMenuModel::getOptions() const
 {
     return(const_cast<LoadMenuModel &>(*this).mLstOptions);
 }
@@ -35,7 +42,7 @@ unsigned LoadMenuModel::getSelectedIndex() const
     return(muiSelectedIndex);
 }
 
-void LoadMenuModel::setOptions(const QList<QString> &lstOptions)
+void LoadMenuModel::setOptions(const QList<LoadMenuOption> &lstOptions)
 {
     mLstOptions = lstOptions;
 }

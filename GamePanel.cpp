@@ -9,6 +9,7 @@
 #include <QPainter>
 #include <QtGamepad/QGamepad>
 #include <QtGamepad/QGamepadManager>
+#include <QDebug>
 
 using net::draconia::games::bane::BaneController;
 using namespace net::draconia::games::bane::model;
@@ -40,7 +41,24 @@ void GamePanel::gamepadLeftYAxisTilted(double dValue)
 
 void GamePanel::gamepadDownPressed(const bool bPressed)
 {
-    Q_UNUSED(bPressed);
+    if(bPressed)
+        {
+        unsigned uiNewIndex;
+        LoadMenuModel &model = getMenu().getModel();
+
+        do
+            {
+            if(static_cast<int>(model.getSelectedIndex()) >= model.getOptions().length() - 1)
+                uiNewIndex = 0;
+            else
+                uiNewIndex = model.getSelectedIndex() + 1;
+
+            model.setSelectedIndex(uiNewIndex);
+            }
+        while(!model.getOptions()[uiNewIndex].isEnabled());
+
+        repaint();
+        }
 }
 
 void GamePanel::gamepadLeftPressed(const bool bPressed)
@@ -55,12 +73,35 @@ void GamePanel::gamepadRightPressed(const bool bPressed)
 
 void GamePanel::gamepadStartPressed(const bool bPressed)
 {
-    Q_UNUSED(bPressed);
+    if(bPressed)
+        {
+        if(!isInLoadingMenu())
+            setInLoadingMenu(true);
+        else
+            getModel().setPaused(!getModel().isPaused());
+        }
 }
 
 void GamePanel::gamepadUpPressed(const bool bPressed)
 {
-    Q_UNUSED(bPressed);
+    if(bPressed)
+        {
+        unsigned uiNewIndex;
+        LoadMenuModel &model = getMenu().getModel();
+
+        do
+            {
+            if(static_cast<int>(model.getSelectedIndex()) <= 0)
+                uiNewIndex = model.getOptions().length() - 1;
+            else
+                uiNewIndex = model.getSelectedIndex() - 1;
+
+            model.setSelectedIndex(uiNewIndex);
+            }
+        while(!model.getOptions()[uiNewIndex].isEnabled());
+
+        repaint();
+        }
 }
 
 BaneController &GamePanel::getController()
@@ -162,6 +203,68 @@ void GamePanel::keyPressEvent(QKeyEvent *event)
 {
     switch(event->key())
         {
+        case Qt::Key_Enter:
+        case Qt::Key_Return:
+            if(!isInLoadingMenu())
+                setInLoadingMenu(true);
+            else
+                switch(getMenu().getModel().getSelectedIndex())
+                    {
+                    case 0:
+                        start();
+                    case 1:
+                    case 2:
+                        break;
+                    case 3:
+                        getController().exit();
+                        break;
+                    }
+
+            repaint();
+
+            break;
+        case Qt::Key_Space:
+            if(!isInLoadingMenu())
+                setInLoadingMenu(true);
+            break;
+        case Qt::Key_Up:
+            {
+            unsigned uiNewIndex;
+            LoadMenuModel &model = getMenu().getModel();
+
+            do
+                {
+                if(static_cast<int>(model.getSelectedIndex()) <= 0)
+                    uiNewIndex = model.getOptions().length() - 1;
+                else
+                    uiNewIndex = model.getSelectedIndex() - 1;
+
+                model.setSelectedIndex(uiNewIndex);
+                }
+            while(!model.getOptions()[uiNewIndex].isEnabled());
+
+            repaint();
+            }
+            break;
+        case Qt::Key_Down:
+            {
+            unsigned uiNewIndex;
+            LoadMenuModel &model = getMenu().getModel();
+
+            do
+                {
+                if(static_cast<int>(model.getSelectedIndex()) >= model.getOptions().length() - 1)
+                    uiNewIndex = 0;
+                else
+                    uiNewIndex = model.getSelectedIndex() + 1;
+
+                model.setSelectedIndex(uiNewIndex);
+                }
+            while(!model.getOptions()[uiNewIndex].isEnabled());
+
+            repaint();
+            }
+            break;
         default:
             break;
         }
@@ -187,15 +290,17 @@ void GamePanel::paintEvent(QPaintEvent *event)
         uiWidth = (uiWidth - szTitle.width()) / 2;
         uiHeight = (uiHeight - szTitle.height()) / 2;
 
-        painter.setPen(QColor(0xf9, 0xf9, 0xf9));
+        painter.setPen(QColor(0xF9, 0xF9, 0xF9));
         painter.setFont(getTitleFont());
         painter.drawText(QPoint(uiWidth, uiHeight), "BANE");
+
+        painter.setFont(font);
+
+        if(isInLoadingMenu())
+            getMenu().render(painter, QPoint(uiWidth, uiHeight + szTitle.height()));
         }
-
-    painter.setFont(font);
-
-    if(isInLoadingMenu())
-        getMenu().render(painter);
+    else
+        painter.drawImage(event->rect(), QImage(":/images/Scene 1.png"));
 
     painter.restore();
 }
@@ -203,6 +308,8 @@ void GamePanel::paintEvent(QPaintEvent *event)
 void GamePanel::setInLoadingMenu(const bool bInLoadingMenu)
 {
     mbInLoadingMenu = bInLoadingMenu;
+
+    getMenu().getModel().getOptions()[1].setEnabled(getController().getSavedGames().length() > 0);
 
     update();
 }
@@ -214,6 +321,7 @@ GamePanel::GamePanel(GameWindow *parent)
 GamePanel::GamePanel(GameWindow *parent, BaneController &refController)
     :   QWidget(parent)
     ,   mRefController(refController)
+    ,   mbInLoadingMenu(false)
     ,   miFrame(-1)
     ,   mPtrTitleFont(nullptr)
     ,   mTimerEvents(nullptr)
