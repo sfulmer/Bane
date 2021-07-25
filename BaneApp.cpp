@@ -10,7 +10,7 @@ void BaneApp::setArguments(int argc, char *argv[])
         mLstArgs.append(argv[iLoop]);
 }
 
-void BaneApp::showMainWindow()
+void BaneApp::showStagingWindow()
 {
     QGamepadManager *ptrManager = QGamepadManager::instance();
 
@@ -22,12 +22,12 @@ void BaneApp::showMainWindow()
 
     processEvents();
 
-    getMainWindow().show();
+    getStagingWindow().show();
 }
 
 BaneApp::BaneApp(int argc, char *argv[])
     :   QApplication(argc, argv)
-    ,   mWndGame(nullptr)
+    ,   mWndStaging(nullptr)
     ,   mObjController(*this)
 {
     setArguments(argc, argv);
@@ -35,14 +35,14 @@ BaneApp::BaneApp(int argc, char *argv[])
 
 int BaneApp::exec()
 {
-    showMainWindow();
+    showStagingWindow();
 
     return(QApplication::exec());
 }
 
 void BaneApp::exit()
 {
-    getMainWindow().close();
+    getStagingWindow().close();
 }
 
 QList<QString> &BaneApp::getArguments() const
@@ -55,7 +55,7 @@ BaneController &BaneApp::getController()
     return(mObjController);
 }
 
-GameWindow &BaneApp::getMainWindow()
+StagingWindow &BaneApp::getStagingWindow()
 {
-    return(mWndGame);
+    return(mWndStaging);
 }

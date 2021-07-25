@@ -1,7 +1,9 @@
+#include "AudioOutputVolumeObserver.h"
 #include "BaneApp.h"
 #include "BaneController.h"
 
 using namespace net::draconia::games::bane;
+using net::draconia::games::bane::ui::observers::AudioOutputVolumeObserver;
 
 BaneApp &BaneController::getApplication()
 {
@@ -10,7 +12,9 @@ BaneApp &BaneController::getApplication()
 
 BaneController::BaneController(BaneApp &refApp)
     :   mRefApp(refApp)
-{ }
+{
+    getSettingsModel().addObserver(new AudioOutputVolumeObserver(getAudioOutput()));
+}
 
 BaneController::~BaneController()
 { }
@@ -18,6 +22,11 @@ BaneController::~BaneController()
 void BaneController::exit()
 {
     getApplication().exit();
+}
+
+QAudioOutput &BaneController::getAudioOutput()
+{
+    return(mObjAudioOutput);
 }
 
 GameModel &BaneController::getModel()
@@ -28,4 +37,9 @@ GameModel &BaneController::getModel()
 QList<GameModel> &BaneController::getSavedGames() const
 {
     return(const_cast<BaneController &>(*this).mLstSavedGames);
+}
+
+SettingsModel &BaneController::getSettingsModel()
+{
+    return(mObjSettingsModel);
 }

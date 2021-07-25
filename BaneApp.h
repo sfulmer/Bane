@@ -1,12 +1,12 @@
 #pragma once
 
-#include "GameWindow.h"
+#include "StagingWindow.h"
 #include "BaneController.h"
 #include <QApplication>
 #include <QList>
 #include <QString>
 
-using net::draconia::games::bane::ui::GameWindow;
+using net::draconia::games::bane::ui::StagingWindow;
 
 namespace net
 {
@@ -18,19 +18,19 @@ namespace net
             {
                 class BaneApp : public QApplication
                 {
-                    GameWindow mWndGame;
+                    StagingWindow mWndStaging;
                     BaneController mObjController;
                     QList<QString> mLstArgs;
                 protected:
                     void setArguments(int argc, char *argv[]);
-                    void showMainWindow();
+                    void showStagingWindow();
                 public:
                     BaneApp(int argc, char *argv[]);
                     int exec();
                     void exit();
                     QList<QString> &getArguments() const;
                     BaneController &getController();
-                    GameWindow &getMainWindow();
+                    StagingWindow &getStagingWindow();
                 };
             }
         }

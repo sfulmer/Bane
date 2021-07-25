@@ -1,4 +1,4 @@
-QT       += core gui sql gamepad
+QT       += core gui sql gamepad multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -11,14 +11,21 @@ CONFIG += c++11
 SOURCES += \
     Armor.cpp \
     Attachable.cpp \
+    AudioOutputVolumeObserver.cpp \
+    AudioVolumeLabel.cpp \
+    AudioVolumeObserver.cpp \
     BaneApp.cpp \
     BaneController.cpp \
     Character.cpp \
+    ControlsTab.cpp \
+    DisplayTypeChangedObserver.cpp \
     Enemy.cpp \
     GameModel.cpp \
     GamePanel.cpp \
     GameWindow.cpp \
+    GeneralSettingsTab.cpp \
     Item.cpp \
+    LanguageChangedObserver.cpp \
     LoadMenuModel.cpp \
     LoadMenuOption.cpp \
     LoadMenuRenderer.cpp \
@@ -26,11 +33,20 @@ SOURCES += \
     MenuOption.cpp \
     Observable.cpp \
     Party.cpp \
+    PausedWhileInbackgroundObserver.cpp \
     Point.cpp \
+    Properties.cpp \
+    PropertyFileLoader.cpp \
+    SettingsDialog.cpp \
+    SettingsModel.cpp \
     Spell.cpp \
     Spelled.cpp \
+    StagingPanel.cpp \
+    StagingWindow.cpp \
     StatusEffect.cpp \
     Target.cpp \
+    VideoResolutionChangedObserver.cpp \
+    VideoResolutionItemModel.cpp \
     Weapon.cpp \
     main.cpp \
     BaneMainWindow.cpp
@@ -38,15 +54,22 @@ SOURCES += \
 HEADERS += \
     Armor.h \
     Attachable.h \
+    AudioOutputVolumeObserver.h \
+    AudioVolumeLabel.h \
+    AudioVolumeObserver.h \
     BaneApp.h \
     BaneController.h \
     BaneMainWindow.h \
     Character.h \
+    ControlsTab.h \
+    DisplayTypeChangedObserver.h \
     Enemy.h \
     GameModel.h \
     GamePanel.h \
     GameWindow.h \
+    GeneralSettingsTab.h \
     Item.h \
+    LanguageChangedObserver.h \
     LoadMenuModel.h \
     LoadMenuOption.h \
     LoadMenuRenderer.h \
@@ -54,11 +77,20 @@ HEADERS += \
     MenuOption.h \
     Observable.h \
     Party.h \
+    PausedWhileInBackgroundObserver.h \
     Point.h \
+    Properties.h \
+    PropertyFileLoader.h \
+    SettingsDialog.h \
+    SettingsModel.h \
     Spell.h \
     Spelled.h \
+    StagingPanel.h \
+    StagingWindow.h \
     StatusEffect.h \
     Target.h \
+    VideoResolutionChangedObserver.h \
+    VideoResolutionItemModel.h \
     Weapon.h
 
 # Default rules for deployment.
