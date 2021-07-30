@@ -61,7 +61,12 @@ bool SettingsModel::Language::operator!=(const Language &refOther) const
     return(!operator==(refOther));
 }
 
-QJsonObject SettingsModel::Language::toJson()
+SettingsModel::Language::operator QString() const
+{
+    return(toString());
+}
+
+QJsonObject SettingsModel::Language::toJson() const
 {
     QJsonObject obj;
 
@@ -73,7 +78,7 @@ QJsonObject SettingsModel::Language::toJson()
 
 QString SettingsModel::Language::toString() const
 {
-    return("[Language = " + getLanguage() + ", Region = " + getRegion() + "]");
+    return(getLanguage() + "(" + getRegion() + ")");
 }
 
 SettingsModel::VideoResolution::VideoResolution()
@@ -127,6 +132,11 @@ bool SettingsModel::VideoResolution::operator==(const SettingsModel::VideoResolu
 bool SettingsModel::VideoResolution::operator!=(const SettingsModel::VideoResolution &refOther) const
 {
     return(!operator==(refOther));
+}
+
+SettingsModel::VideoResolution::operator QString() const
+{
+    return(toString());
 }
 
 QJsonObject SettingsModel::VideoResolution::toJson() const

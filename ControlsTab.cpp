@@ -8,6 +8,20 @@
 using net::draconia::games::bane::BaneApp;
 using namespace net::draconia::games::bane::ui;
 
+void ControlsTab::connectedGamepadsChanged()
+{
+    if(getGamePad() != nullptr)
+        {
+        connect(getGamePad(), &QGamepad::axisLeftXChanged, this, &ControlsTab::gamepadLeftXAxisTilted);
+        connect(getGamePad(), &QGamepad::axisLeftYChanged, this, &ControlsTab::gamepadLeftXAxisTilted);
+        connect(getGamePad(), &QGamepad::buttonDownChanged, this, &ControlsTab::gamepadDownPressed);
+        connect(getGamePad(), &QGamepad::buttonLeftChanged, this, &ControlsTab::gamepadLeftPressed);
+        connect(getGamePad(), &QGamepad::buttonRightChanged, this, &ControlsTab::gamepadRightPressed);
+        connect(getGamePad(), &QGamepad::buttonStartChanged, this, &ControlsTab::gamepadStartPressed);
+        connect(getGamePad(), &QGamepad::buttonUpChanged, this, &ControlsTab::gamepadUpPressed);
+        }
+}
+
 bool ControlsTab::eventFilter(QObject *object, QEvent *event)
 {
     if(event->type() == QEvent::FocusIn)
@@ -80,31 +94,6 @@ void ControlsTab::gamepadUpPressed(const bool bPressed)
                 getFocusControl()->setText("↑");
 }
 
-QGamepad *ControlsTab::getFirstConnectedGamePad()
-{
-
-}
-
-QLineEdit *ControlsTab::getFocusControl()
-{
-    return(QObject::findChild<QLineEdit *>(QString((getFocusedInferfaceType() == SettingsModel::InterfaceType::Controller) ? "Controller" : "Keyboard") + "_" + getFocusedControlName()));
-}
-
-QString &ControlsTab::getFocusedControlName() const
-{
-    return(const_cast<ControlsTab &>(*this).msFocusedControl);
-}
-
-SettingsModel::InterfaceType &ControlsTab::getFocusedInferfaceType() const
-{
-    return(const_cast<ControlsTab &>(*this).meFocusedInterfaceType);
-}
-
-SettingsModel &ControlsTab::getModel() const
-{
-    return(mRefModel);
-}
-
 QTableWidget *ControlsTab::getControlsTable()
 {
     if(mTblControls == nullptr)
@@ -133,6 +122,54 @@ QTableWidget *ControlsTab::getControlsTable()
     return(mTblControls);
 }
 
+QGamepad *ControlsTab::getFirstConnectedGamePad()
+{
+    if(getGamePadManager()->connectedGamepads().length() > 0)
+        return(new QGamepad(getGamePadManager()->connectedGamepads()[0]));
+    else
+        return(nullptr);
+}
+
+QLineEdit *ControlsTab::getFocusControl()
+{
+    return(QObject::findChild<QLineEdit *>(QString((getFocusedInferfaceType() == SettingsModel::InterfaceType::Controller) ? "Controller" : "Keyboard") + "_" + getFocusedControlName()));
+}
+
+QString &ControlsTab::getFocusedControlName() const
+{
+    return(const_cast<ControlsTab &>(*this).msFocusedControl);
+}
+
+SettingsModel::InterfaceType &ControlsTab::getFocusedInferfaceType() const
+{
+    return(const_cast<ControlsTab &>(*this).meFocusedInterfaceType);
+}
+
+QGamepad *ControlsTab::getGamePad()
+{
+    if(mPtrGamepad == nullptr)
+        mPtrGamepad = getFirstConnectedGamePad();
+
+    return(mPtrGamepad);
+}
+
+QGamepadManager *ControlsTab::getGamePadManager()
+{
+    if(mPtrManager == nullptr)
+        {
+        mPtrManager = QGamepadManager::instance();
+
+        connect(mPtrManager, &QGamepadManager::connectedGamepadsChanged, this, &ControlsTab::connectedGamepadsChanged);
+        }
+
+    return(mPtrManager);
+}
+
+SettingsModel &ControlsTab::getModel() const
+{
+    return(mRefModel);
+}
+
 void ControlsTab::initControls() const
 {
     ControlsTab *ptrThis = const_cast<ControlsTab *>(this);
@@ -150,6 +187,8 @@ void ControlsTab::initTab() const
     initControls();
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdangling-else"
 void ControlsTab::keyPressEvent(QKeyEvent *event)
 {
     Q_UNUSED(event);
@@ -211,7 +250,7 @@ void ControlsTab::keyPressEvent(QKeyEvent *event)
                 case Qt::Key_BracketLeft:
                     getFocusControl()->setText("[");
                     break;
-                cawwwwwse Qt::Key_BracketRight:
+                case Qt::Key_BracketRight:
                     getFocusControl()->setText("]");
                     break;
                 case Qt::Key_Comma:
@@ -231,6 +270,7 @@ void ControlsTab::keyPressEvent(QKeyEvent *event)
                     break;
                 }
 }
+#pragma GCC diagnostic pop
 
 void ControlsTab::setFocusedControl(const QString &sFocusedControl)
 {
@@ -249,6 +289,7 @@ ControlsTab::ControlsTab(QWidget *parent)
 ControlsTab::ControlsTab(QWidget *parent, const SettingsModel &refModel)
     :   QWidget(parent)
     ,   mRefModel(const_cast<SettingsModel &>(refModel))
+    ,   mPtrGamepad(nullptr)
     ,   mTblControls(nullptr)
 {
     initTab();

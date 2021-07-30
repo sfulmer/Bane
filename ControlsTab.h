@@ -13,11 +13,14 @@ class ControlsTab : public QWidget
     Q_OBJECT
 
     SettingsModel &mRefModel;
+    QGamepad *mPtrGamepad;
+    QGamepadManager *mPtrManager;
     QTableWidget *mTblControls;
     SettingsModel::InterfaceType meFocusedInterfaceType;
     QString msFocusedControl;
 protected:
-    bool eventFilter(QObject *object, QEvent *event);void connectedGamepadsChanged();
+    void connectedGamepadsChanged();
+    bool eventFilter(QObject *object, QEvent *event);
     void gamepadLeftXAxisTilted(double dValue);
     void gamepadLeftYAxisTilted(double dValue);
     void gamepadDownPressed(const bool bPressed);
@@ -25,13 +28,14 @@ protected:
     void gamepadRightPressed(const bool bPressed);
     void gamepadStartPressed(const bool bPressed);
     void gamepadUpPressed(const bool bPressed);
+    QTableWidget *getControlsTable();
     QGamepad *getFirstConnectedGamePad();
     QLineEdit *getFocusControl();
     QString &getFocusedControlName() const;
     QGamepad *getGamePad();
+    QGamepadManager *getGamePadManager();
     SettingsModel::InterfaceType &getFocusedInferfaceType() const;
     SettingsModel &getModel() const;
-    QTableWidget *getControlsTable();
     void initControls() const;
     void initTab() const;
     virtual void keyPressEvent(QKeyEvent *event);

@@ -18,16 +18,17 @@ namespace net
                 {
                     namespace model
                     {
-                        class VideoResolutionItemModel : public QAbstractItemModel
+                        template<typename T>
+                        class ItemModel : public QAbstractItemModel
                         {
-                            QList<SettingsModel::VideoResolution> mLstVideoResolutions;
+                            QList<T> mLstModel;
                         protected:
-                            QList<SettingsModel::VideoResolution> getVideoResolutions() const;
+                            QList<T> getModel() const;
                         public:
-                            VideoResolutionItemModel();
-                            VideoResolutionItemModel(const std::initializer_list<SettingsModel::VideoResolution> lstModel);
-                            VideoResolutionItemModel(const QList<SettingsModel::VideoResolution> &lstModel);
-                            VideoResolutionItemModel(const VideoResolutionItemModel &refCopy);
+                            ItemModel();
+                            ItemModel(const std::initializer_list<T> lstModel);
+                            ItemModel(const QList<T> &lstModel);
+                            ItemModel(const ItemModel<T> &refCopy);
 
                             virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
                             virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;

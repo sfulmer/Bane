@@ -36,11 +36,12 @@ namespace net
                             void setLanguage(const QString &sLanguage);
                             void setRegion(const QString &sRegion);
 
-                            Language &operator=(const Language &refCopy);
-                            bool operator==(const Language &refOther) const;
-                            bool operator!=(const Language &refOther) const;
+                            Language &operator=(const SettingsModel::Language &refCopy);
+                            bool operator==(const SettingsModel::Language &refOther) const;
+                            bool operator!=(const SettingsModel::Language &refOther) const;
+                            operator QString() const;
 
-                            QJsonObject toJson();
+                            QJsonObject toJson() const;
                             QString toString() const;
                         };
                         class VideoResolution
@@ -60,6 +61,7 @@ namespace net
                             VideoResolution operator=(const VideoResolution &refCopy);
                             bool operator==(const VideoResolution &refOther) const;
                             bool operator!=(const VideoResolution &refOther) const;
+                            operator QString() const;
 
                             QJsonObject toJson() const;
                             QString toString() const;
@@ -100,3 +102,6 @@ namespace net
         }
     }
 }
+
+Q_DECLARE_METATYPE(net::draconia::games::bane::model::SettingsModel::Language);
+Q_DECLARE_METATYPE(net::draconia::games::bane::model::SettingsModel::VideoResolution);

@@ -25,7 +25,9 @@ SOURCES += \
     GameWindow.cpp \
     GeneralSettingsTab.cpp \
     Item.cpp \
+    ItemModel.cpp \
     LanguageChangedObserver.cpp \
+    LanguageComboBoxModel.cpp \
     LoadMenuModel.cpp \
     LoadMenuOption.cpp \
     LoadMenuRenderer.cpp \
@@ -35,8 +37,6 @@ SOURCES += \
     Party.cpp \
     PausedWhileInbackgroundObserver.cpp \
     Point.cpp \
-    Properties.cpp \
-    PropertyFileLoader.cpp \
     SettingsDialog.cpp \
     SettingsModel.cpp \
     Spell.cpp \
@@ -46,7 +46,6 @@ SOURCES += \
     StatusEffect.cpp \
     Target.cpp \
     VideoResolutionChangedObserver.cpp \
-    VideoResolutionItemModel.cpp \
     Weapon.cpp \
     main.cpp \
     BaneMainWindow.cpp
@@ -69,7 +68,9 @@ HEADERS += \
     GameWindow.h \
     GeneralSettingsTab.h \
     Item.h \
+    ItemModel.h \
     LanguageChangedObserver.h \
+    LanguageComboBoxModel.h \
     LoadMenuModel.h \
     LoadMenuOption.h \
     LoadMenuRenderer.h \
@@ -79,8 +80,6 @@ HEADERS += \
     Party.h \
     PausedWhileInBackgroundObserver.h \
     Point.h \
-    Properties.h \
-    PropertyFileLoader.h \
     SettingsDialog.h \
     SettingsModel.h \
     Spell.h \
@@ -90,7 +89,6 @@ HEADERS += \
     StatusEffect.h \
     Target.h \
     VideoResolutionChangedObserver.h \
-    VideoResolutionItemModel.h \
     Weapon.h
 
 # Default rules for deployment.

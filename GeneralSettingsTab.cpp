@@ -5,12 +5,15 @@
 #include "LanguageChangedObserver.h"
 #include <QGridLayout>
 #include "PausedWhileInBackgroundObserver.h"
-#include "VideoResolutionItemModel.h"
+#include "ItemModel.h"
 #include "VideoResolutionChangedObserver.h"
 
 using namespace net::draconia::games::bane::ui;
-using net::draconia::games::bane::ui::model::VideoResolutionItemModel;
+using namespace net::draconia::games::bane::ui::model;
 using namespace net::draconia::games::bane::ui::observers;
+
+extern template class net::draconia::games::bane::ui::model::ItemModel<SettingsModel::Language>;
+extern template class net::draconia::games::bane::ui::model::ItemModel<SettingsModel::VideoResolution>;
 
 void GeneralSettingsTab::audioVolumeChanged()
 {
@@ -96,10 +99,9 @@ QComboBox *GeneralSettingsTab::getLanguageComboBox()
 {
     if(mCboLanguage == nullptr)
         {
-        QList<QString> lstLanguages({{"English", "Spanish", "Portuguese", "Italian", "Greek", "Latin", "Russian", "German", "Dutch", "French", "Japanese", "Chinese"}});
+        QList<SettingsModel::Language> lstLanguages({{SettingsModel::Language("English", "EN"), SettingsModel::Language("Spanish","ES"), SettingsModel::Language("Portuguese", "PR"), SettingsModel::Language("Italian", "IT"), SettingsModel::Language("Latin", "LT"), SettingsModel::Language("Greek", "GR"), SettingsModel::Language("French", "FR"), SettingsModel::Language("German", "GE"), SettingsModel::Language("Dutch", "NL"), SettingsModel::Language("Japanese", "JP"), SettingsModel::Language("Chinese", "CH")}});
         mCboLanguage = new QComboBox(this);
-
-        mCboLanguage->addItems(lstLanguages);
+        mCboLanguage->setModel(new ItemModel<SettingsModel::Language>(lstLanguages));
 
         mCboLanguage->setCurrentIndex(lstLanguages.indexOf(getSettingsModel().getLanguage()));
 
@@ -147,7 +149,7 @@ QComboBox *GeneralSettingsTab::getVideoResolutionComboBox()
         {
         QList<SettingsModel::VideoResolution> lstVideoResolutions({{SettingsModel::VideoResolution(640, 480), SettingsModel::VideoResolution(800, 600)}});
         mCboVideoResoution = new QComboBox(this);
-        mCboVideoResoution->setModel(new VideoResolutionItemModel(lstVideoResolutions));
+        mCboVideoResoution->setModel(new ItemModel<SettingsModel::VideoResolution>(lstVideoResolutions));
 
         mCboVideoResoution->setCurrentIndex(lstVideoResolutions.indexOf(getSettingsModel().getVideoResolution()));
 
@@ -198,8 +200,10 @@ void GeneralSettingsTab::initTab() const
 void GeneralSettingsTab::languageChanged(const int iLanguage)
 {
     QMap<int, QVariant> mapValues = getLanguageComboBox()->model()->itemData((QModelIndex()));
+    QVariant &refValue = mapValues[iLanguage];
+    SettingsModel::Language objLanguage = refValue.value<SettingsModel::Language>();
 
-    getSettingsModel().setLanguage(mapValues[iLanguage].toString());
+    getSettingsModel().setLanguage(objLanguage);
 }
 
 void GeneralSettingsTab::pauseClicked()
