@@ -6,6 +6,7 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QStandardPaths>
 #include "SettingsModel.h"
 
 using namespace net::draconia::games::bane::model;
@@ -246,14 +247,18 @@ void SettingsModel::loadFromRepo()
         {
         QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
 
-        if(QFile(":/database/repo.db").exists())
-            db.setDatabaseName(":/database/repo.db");
+        if(QFile(QStandardPaths::locate(QStandardPaths::AppDataLocation, QString(), QStandardPaths::LocateDirectory) + "../../Bane/resources/database/repo.db").exists())
+            {
+            db.setDatabaseName(QStandardPaths::locate(QStandardPaths::AppDataLocation, QString(), QStandardPaths::LocateDirectory) + "../../Bane/resources/database/repo.db");
 
-        if(!db.open())
-            qDebug() << "Error loading repo:\n" << db.lastError();
-
-        msLstLanguagesAvailable = SettingsModel::Language::loadFromRepo(db);
-        msLstVideoResolutionsAvailable = SettingsModel::VideoResolution::loadFromRepo(db);
+            if(!db.open())
+                qDebug() << "Error loading repo:\n" << db.lastError();
+            else
+                {
+                msLstLanguagesAvailable = SettingsModel::Language::loadFromRepo(db);
+                msLstVideoResolutionsAvailable = SettingsModel::VideoResolution::loadFromRepo(db);
+                }
+            }
         }
 }
 
