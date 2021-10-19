@@ -6,4 +6,7 @@
         <file alias="Scene 1.png">resources/images/Scene 1.png</file>
         <file alias="MainChar.png">resources/images/MainChar.png</file>
     </qresource>
+    <qresource prefix="/database">
+        <file alias="repo.db">resources/database/repo.db</file>
+    </qresource>
 </RCC>

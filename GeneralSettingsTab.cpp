@@ -99,7 +99,7 @@ QComboBox *GeneralSettingsTab::getLanguageComboBox()
 {
     if(mCboLanguage == nullptr)
         {
-        QList<SettingsModel::Language> lstLanguages({{SettingsModel::Language("English", "EN"), SettingsModel::Language("Spanish","ES"), SettingsModel::Language("Portuguese", "PR"), SettingsModel::Language("Italian", "IT"), SettingsModel::Language("Latin", "LT"), SettingsModel::Language("Greek", "GR"), SettingsModel::Language("French", "FR"), SettingsModel::Language("German", "GE"), SettingsModel::Language("Dutch", "NL"), SettingsModel::Language("Japanese", "JP"), SettingsModel::Language("Chinese", "CH")}});
+        QList<SettingsModel::Language> lstLanguages(getSettingsModel().getAvailableLanguages());
         mCboLanguage = new QComboBox(this);
         mCboLanguage->setModel(new ItemModel<SettingsModel::Language>(lstLanguages));
 
@@ -147,7 +147,7 @@ QComboBox *GeneralSettingsTab::getVideoResolutionComboBox()
 {
     if(mCboVideoResoution == nullptr)
         {
-        QList<SettingsModel::VideoResolution> lstVideoResolutions({{SettingsModel::VideoResolution(640, 480), SettingsModel::VideoResolution(800, 600)}});
+        QList<SettingsModel::VideoResolution> lstVideoResolutions(getSettingsModel().getAvailableVideoResolutions());
         mCboVideoResoution = new QComboBox(this);
         mCboVideoResoution->setModel(new ItemModel<SettingsModel::VideoResolution>(lstVideoResolutions));
 

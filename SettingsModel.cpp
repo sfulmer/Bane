@@ -3,11 +3,49 @@
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
 #include "SettingsModel.h"
 
 using namespace net::draconia::games::bane::model;
 
+QList<SettingsModel::Language> SettingsModel::Language::loadFromRepo(QSqlDatabase &db)
+{
+    QList<SettingsModel::Language> lstReturn;
+    QSqlQuery query(db);
+
+    query.prepare("select Id, Language, Region from Languages;");
+
+    if(query.exec())
+        {
+        if(query.first())
+            do
+                {
+                unsigned uiId;
+                QString sLanguage, sRegion;
+
+                uiId = query.value("Id").toUInt();
+                sLanguage = query.value("Language").toString();
+                sRegion = query.value("Region").toString();
+
+                lstReturn.append(SettingsModel::Language(uiId, sLanguage, sRegion));
+                }
+            while(query.next());
+        }
+    else
+            qDebug() << query.lastError();
+
+    return(lstReturn);
+}
+
 SettingsModel::Language::Language()
+{ }
+
+SettingsModel::Language::Language(const unsigned uiId, const QString &sLanguage, const QString &sRegion)
+    :   muiId(uiId)
+    ,   msLanguage(sLanguage)
+    ,   msRegion(sRegion)
 { }
 
 SettingsModel::Language::Language(const QString &sLanguage, const QString &sRegion)
@@ -81,7 +119,37 @@ QString SettingsModel::Language::toString() const
     return(getLanguage() + "(" + getRegion() + ")");
 }
 
+QList<SettingsModel::VideoResolution> SettingsModel::VideoResolution::loadFromRepo(QSqlDatabase &db)
+{
+    QList<SettingsModel::VideoResolution> lstReturn;
+    QSqlQuery query(db);
+
+    query.prepare("select Id, Width, Height from VideoResolutions;");
+
+    if(query.exec())
+        {
+        if(query.first())
+            do
+                {
+                int iId, iWidth, iHeight;
+
+                iId = query.value("Id").toInt();
+                iWidth = query.value("Width").toInt();
+                iHeight = query.value("Height").toInt();
+
+                lstReturn.append(SettingsModel::VideoResolution(iId, iWidth, iHeight));
+                }
+            while(query.next());
+        }
+
+    return(lstReturn);
+}
+
 SettingsModel::VideoResolution::VideoResolution()
+{ }
+
+SettingsModel::VideoResolution::VideoResolution(const unsigned uiId, const unsigned uiWidth, const unsigned uiHeight)
+    :   muiId(uiId), muiHeight(uiHeight), muiWidth(uiWidth)
 { }
 
 SettingsModel::VideoResolution::VideoResolution(const unsigned uiWidth, const unsigned uiHeight)
@@ -89,7 +157,7 @@ SettingsModel::VideoResolution::VideoResolution(const unsigned uiWidth, const un
 { }
 
 SettingsModel::VideoResolution::VideoResolution(const VideoResolution &refCopy)
-    :   SettingsModel::VideoResolution(refCopy.getWidth(), refCopy.getHeight())
+    :   SettingsModel::VideoResolution(refCopy.getId(), refCopy.getWidth(), refCopy.getHeight())
 { }
 
 SettingsModel::VideoResolution::~VideoResolution()
@@ -98,6 +166,11 @@ SettingsModel::VideoResolution::~VideoResolution()
 unsigned SettingsModel::VideoResolution::getHeight() const
 {
     return(muiHeight);
+}
+
+unsigned SettingsModel::VideoResolution::getId() const
+{
+    return(muiId);
 }
 
 unsigned SettingsModel::VideoResolution::getWidth() const
@@ -110,6 +183,11 @@ void SettingsModel::VideoResolution::setHeight(const unsigned uiHeight)
     muiHeight = uiHeight;
 }
 
+void SettingsModel::VideoResolution::setId(const unsigned int uiId)
+{
+    muiId = uiId;
+}
+
 void SettingsModel::VideoResolution::setWidth(const unsigned uiWidth)
 {
     muiWidth = uiWidth;
@@ -118,6 +196,7 @@ void SettingsModel::VideoResolution::setWidth(const unsigned uiWidth)
 SettingsModel::VideoResolution SettingsModel::VideoResolution::operator=(const SettingsModel::VideoResolution &refCopy)
 {
     setHeight(refCopy.getHeight());
+    setId(refCopy.getId());
     setWidth(refCopy.getWidth());
 
     return(*this);
@@ -125,7 +204,8 @@ SettingsModel::VideoResolution SettingsModel::VideoResolution::operator=(const S
 
 bool SettingsModel::VideoResolution::operator==(const SettingsModel::VideoResolution &refOther) const
 {
-    return  (   (getHeight() == refOther.getHeight())
+    return  (   (getId() == refOther.getId())
+            &&  (getHeight() == refOther.getHeight())
             &&  (getWidth()) == refOther.getWidth());
 }
 
@@ -136,6 +216,8 @@ bool SettingsModel::VideoResolution::operator!=(const SettingsModel::VideoResolu
 
 SettingsModel::VideoResolution::operator QString() const
 {
+    qDebug() << toString();
+
     return(toString());
 }
 
@@ -143,6 +225,7 @@ QJsonObject SettingsModel::VideoResolution::toJson() const
 {
     QJsonObject obj;
 
+    obj["id"] = QJsonValue(static_cast<int>(getId()));
     obj["width"] = QJsonValue(static_cast<int>(getWidth()));
     obj["height"] = QJsonValue(static_cast<int>(getHeight()));
 
@@ -154,13 +237,35 @@ QString SettingsModel::VideoResolution::toString() const
     return(QString("%1").arg(getWidth()) + "x" + QString("%1").arg(getHeight()));
 }
 
+QList<SettingsModel::Language> SettingsModel::msLstLanguagesAvailable;
+QList<SettingsModel::VideoResolution> SettingsModel::msLstVideoResolutionsAvailable;
+
+void SettingsModel::loadFromRepo()
+{
+    if(QSqlDatabase::isDriverAvailable("QSQLITE"))
+        {
+        QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+
+        if(QFile(":/database/repo.db").exists())
+            db.setDatabaseName(":/database/repo.db");
+
+        if(!db.open())
+            qDebug() << "Error loading repo:\n" << db.lastError();
+
+        msLstLanguagesAvailable = SettingsModel::Language::loadFromRepo(db);
+        msLstVideoResolutionsAvailable = SettingsModel::VideoResolution::loadFromRepo(db);
+        }
+}
+
 SettingsModel::SettingsModel()
     :   Observable()
     ,   mbPauseWhileInBackground(true)
     ,   meDisplayType(DisplayType::Windowed)
     ,   muiAudioVolume((static_cast<BaneApp *>(qApp)->getController().getAudioOutput().volume() / 1.0) * 100)
     ,   mObjVideoResolution(640, 480)
-{ }
+{
+    loadFromRepo();
+}
 
 SettingsModel::SettingsModel(const SettingsModel &refCopy)
     :   Observable(refCopy)
@@ -169,7 +274,9 @@ SettingsModel::SettingsModel(const SettingsModel &refCopy)
     ,   mObjLanguage(refCopy.getLanguage())
     ,   muiAudioVolume(refCopy.getAudioVolume())
     ,   mObjVideoResolution(refCopy.getVideoResolution())
-{ }
+{
+    loadFromRepo();
+}
 
 SettingsModel::~SettingsModel()
 { }
@@ -177,6 +284,16 @@ SettingsModel::~SettingsModel()
 unsigned SettingsModel::getAudioVolume() const
 {
     return(const_cast<SettingsModel *>(this)->muiAudioVolume);
+}
+
+QList<SettingsModel::Language> &SettingsModel::getAvailableLanguages()
+{
+    return(msLstLanguagesAvailable);
+}
+
+QList<SettingsModel::VideoResolution> &SettingsModel::getAvailableVideoResolutions()
+{
+    return(msLstVideoResolutionsAvailable);
 }
 
 QMap<SettingsModel::InterfaceType, QMap<QString, QString>> &SettingsModel::getControlMap() const

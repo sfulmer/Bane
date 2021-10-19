@@ -3,6 +3,7 @@
 #include "Observable.h"
 #include <QJsonObject>
 #include <QMap>
+#include <QSqlDatabase>
 #include <QString>
 
 using net::draconia::util::Observable;
@@ -24,9 +25,14 @@ namespace net
                         enum InterfaceType {Controller = 0, Keyboard};
                         class Language
                         {
+                        friend class SettingsModel;
+                            unsigned muiId;
                             QString msLanguage, msRegion;
+                        protected:
+                            static QList<Language> loadFromRepo(QSqlDatabase &db);
                         public:
                             Language();
+                            Language(const unsigned muiId, const QString &sLanguage, const QString &sRegion);
                             Language(const QString &sLanguage, const QString &sRegion);
                             Language(const Language &refCopy);
                             ~Language();
@@ -46,16 +52,22 @@ namespace net
                         };
                         class VideoResolution
                         {
-                            unsigned muiHeight, muiWidth;
+                        friend class SettingsModel;
+                            unsigned muiId, muiHeight, muiWidth;
+                        protected:
+                            static QList<VideoResolution> loadFromRepo(QSqlDatabase &db);
                         public:
                             VideoResolution();
+                            VideoResolution(const unsigned uiId, const unsigned uiWidth, const unsigned uiHeight);
                             VideoResolution(const unsigned uiWidth, const unsigned uiHeight);
                             VideoResolution(const VideoResolution &refCopy);
                             ~VideoResolution();
 
                             unsigned getHeight() const;
+                            unsigned getId() const;
                             unsigned getWidth() const;
                             void setHeight(const unsigned uiHeight);
+                            void setId(const unsigned uiId);
                             void setWidth(const unsigned uiWidth);
 
                             VideoResolution operator=(const VideoResolution &refCopy);
@@ -69,16 +81,22 @@ namespace net
                     private:
                         bool mbPauseWhileInBackground;
                         DisplayType meDisplayType;
+                        static QList<Language> msLstLanguagesAvailable;
+                        static QList<VideoResolution> msLstVideoResolutionsAvailable;
                         QMap<InterfaceType, QMap<QString, QString>> mMapControls;
                         Language mObjLanguage;
                         unsigned muiAudioVolume;
                         VideoResolution mObjVideoResolution;
+                    protected:
+                        static void loadFromRepo();
                     public:
                         SettingsModel();
                         SettingsModel(const SettingsModel &refCopy);
                         ~SettingsModel();
 
                         unsigned getAudioVolume() const;
+                        static QList<Language> &getAvailableLanguages();
+                        static QList<VideoResolution> &getAvailableVideoResolutions();
                         QMap<InterfaceType, QMap<QString, QString>> &getControlMap() const;
                         DisplayType &getDisplayType() const;
                         SettingsModel::Language &getLanguage() const;

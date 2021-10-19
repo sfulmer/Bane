@@ -1,6 +1,8 @@
 #include "BaneApp.h"
-#include <QWindow>
+#include <QMetaType>
 #include <QtGamepad/QGamepadManager>
+#include <QWindow>
+#include "SettingsModel.h"
 
 using namespace net::draconia::games::bane;
 
@@ -31,6 +33,9 @@ BaneApp::BaneApp(int argc, char *argv[])
     ,   mObjController(*this)
 {
     setArguments(argc, argv);
+
+    QMetaType::registerConverter(&SettingsModel::Language::toString);
+    QMetaType::registerConverter(&SettingsModel::VideoResolution::toString);
 }
 
 int BaneApp::exec()
