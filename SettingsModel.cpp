@@ -4,6 +4,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSqlDatabase>
+#include <QScreen>
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QStandardPaths>
@@ -238,6 +239,8 @@ QString SettingsModel::VideoResolution::toString() const
     return(QString("%1").arg(getWidth()) + "x" + QString("%1").arg(getHeight()));
 }
 
+const QString SettingsModel::mcsSettingsPath(QStandardPaths::locate(QStandardPaths::AppDataLocation, QString(), QStandardPaths::LocateDirectory) + "../../Bane/Settings.json");
+
 QList<SettingsModel::Language> SettingsModel::msLstLanguagesAvailable;
 QList<SettingsModel::VideoResolution> SettingsModel::msLstVideoResolutionsAvailable;
 
@@ -267,9 +270,37 @@ SettingsModel::SettingsModel()
     ,   mbPauseWhileInBackground(true)
     ,   meDisplayType(DisplayType::Windowed)
     ,   muiAudioVolume((static_cast<BaneApp *>(qApp)->getController().getAudioOutput().volume() / 1.0) * 100)
-    ,   mObjVideoResolution(640, 480)
+    ,   mObjVideoResolution(0, 0)
 {
     loadFromRepo();
+
+    load();
+
+    if(getLanguage() == Language())
+        for(Language &refLanguage : getAvailableLanguages())
+            if(refLanguage.getLanguage().contains("English", Qt::CaseInsensitive))
+                setLanguage(refLanguage);
+
+    if(getVideoResolution() == VideoResolution(0, 0))
+        {
+        QRect screensize = static_cast<QGuiApplication *>(qApp)->primaryScreen()->geometry();
+        QList<VideoResolution> lstResolutions = getAvailableVideoResolutions();
+
+        for(unsigned uiLength = 0, uiLoop = lstResolutions.length() - 1; uiLoop >= uiLength; uiLoop--)
+            {
+            VideoResolution &refVideoResolution = lstResolutions[uiLoop];
+
+            if((static_cast<int>(refVideoResolution.getHeight()) <= screensize.height()) && (static_cast<int>(refVideoResolution.getWidth()) <= screensize.width()))
+                {
+                setVideoResolution(refVideoResolution);
+
+                break;
+                }
+            }
+
+        if(getVideoResolution() == VideoResolution(0, 0))
+            setVideoResolution(lstResolutions[0]);
+        }
 }
 
 SettingsModel::SettingsModel(const SettingsModel &refCopy)

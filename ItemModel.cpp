@@ -39,12 +39,13 @@ int ItemModel<T>::columnCount(const QModelIndex &parent) const
 template<typename T>
 QVariant ItemModel<T>::data(const QModelIndex &index, int role) const
 {
-    if(role == Qt::DisplayRole)
+    if((role == Qt::DisplayRole) && (index.isValid()))
         {
         QVariant objReturnValue;
         const QList<T> &lstModel = getModel();
+        const T &val = lstModel[index.row()];
 
-        objReturnValue.setValue(lstModel[index.row()]);
+        objReturnValue.setValue(val);
 
         return(objReturnValue);
         }

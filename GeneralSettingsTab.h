@@ -31,8 +31,6 @@ namespace net
                         QSlider *mObjAudioVolume;
                         SettingsModel &mRefModel;
                     protected:
-                        void audioVolumeChanged();
-                        void displayTypeChanged(const int iDisplayType);
                         AudioVolumeLabel *getAudioVolumeLabel();
                         QSlider *getAudioVolumeSlider();
                         QComboBox *getDisplayComboBox();
@@ -40,11 +38,14 @@ namespace net
                         QComboBox *getLanguageComboBox();
                         QLabel *getLanguageLabel();
                         QCheckBox *getPauseGameCheckBox();
-                        SettingsModel &getSettingsModel() const;
+                        SettingsModel &getSettingsModel();
                         QComboBox *getVideoResolutionComboBox();
                         QLabel *getVideoResolutionLabel();
                         void initControls() const;
                         void initTab() const;
+                    protected slots:
+                        void audioVolumeChanged(const int iVolume);
+                        void displayTypeChanged(const int iDisplayType);
                         void languageChanged(const int iLanguage);
                         void pauseClicked();
                         void videoResolutionChanged(const int iVideoResolution);

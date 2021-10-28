@@ -2,10 +2,10 @@
 #include "BaneApp.h"
 #include "DisplayTypeChangedObserver.h"
 #include "GeneralSettingsTab.h"
-#include "LanguageChangedObserver.h"
-#include <QGridLayout>
-#include "PausedWhileInBackgroundObserver.h"
 #include "ItemModel.h"
+#include "LanguageChangedObserver.h"
+#include "PausedWhileInBackgroundObserver.h"
+#include <QFormLayout>
 #include "VideoResolutionChangedObserver.h"
 
 using namespace net::draconia::games::bane::ui;
@@ -14,16 +14,6 @@ using namespace net::draconia::games::bane::ui::observers;
 
 extern template class net::draconia::games::bane::ui::model::ItemModel<SettingsModel::Language>;
 extern template class net::draconia::games::bane::ui::model::ItemModel<SettingsModel::VideoResolution>;
-
-void GeneralSettingsTab::audioVolumeChanged()
-{
-    getSettingsModel().setAudioVolume(getAudioVolumeSlider()->value());
-}
-
-void GeneralSettingsTab::displayTypeChanged(const int iDisplayType)
-{
-    getSettingsModel().setDisplayType((SettingsModel::DisplayType)(iDisplayType));
-}
 
 AudioVolumeLabel *GeneralSettingsTab::getAudioVolumeLabel()
 {
@@ -47,7 +37,7 @@ QSlider *GeneralSettingsTab::getAudioVolumeSlider()
         mObjAudioVolume->setTickInterval(1);
         mObjAudioVolume->setValue(getSettingsModel().getAudioVolume());
 
-        connect(mObjAudioVolume, &QSlider::valueChanged, this, &GeneralSettingsTab::audioVolumeChanged);
+        connect(mObjAudioVolume, SIGNAL(valueChanged(int)), this, SLOT(audioVolumeChanged(int)));
         }
 
     return(mObjAudioVolume);
@@ -77,7 +67,7 @@ QComboBox *GeneralSettingsTab::getDisplayComboBox()
                 mCboDisplay->setCurrentIndex(-1);
             }
 
-        connect(mCboDisplay, SIGNAL(QComboBox::currentIndexChanged(int)), this, SLOT(GeneralSettingsTab::displayTypeChanged(int)));
+        connect(mCboDisplay, SIGNAL(currentIndexChanged(int)), this, SLOT(displayTypeChanged(int)));
         }
 
     return(mCboDisplay);
@@ -105,7 +95,7 @@ QComboBox *GeneralSettingsTab::getLanguageComboBox()
 
         mCboLanguage->setCurrentIndex(lstLanguages.indexOf(getSettingsModel().getLanguage()));
 
-        connect(mCboLanguage, SIGNAL(QComboBox::currentIndexChanged(int)), this, SLOT(GeneralSettingsTab::languageChanged(int)));
+        connect(mCboLanguage, SIGNAL(currentIndexChanged(int)), this, SLOT(languageChanged(int)));
         }
 
     return(mCboLanguage);
@@ -138,7 +128,7 @@ QCheckBox *GeneralSettingsTab::getPauseGameCheckBox()
     return(mChkPauseGame);
 }
 
-SettingsModel &GeneralSettingsTab::getSettingsModel() const
+SettingsModel &GeneralSettingsTab::getSettingsModel()
 {
     return(mRefModel);
 }
@@ -151,9 +141,11 @@ QComboBox *GeneralSettingsTab::getVideoResolutionComboBox()
         mCboVideoResoution = new QComboBox(this);
         mCboVideoResoution->setModel(new ItemModel<SettingsModel::VideoResolution>(lstVideoResolutions));
 
-        mCboVideoResoution->setCurrentIndex(lstVideoResolutions.indexOf(getSettingsModel().getVideoResolution()));
+        int iVideoResolution = lstVideoResolutions.indexOf(getSettingsModel().getVideoResolution());
 
-        connect(mCboVideoResoution, SIGNAL(QComboBox::currentIndexChanged(int)), this, SLOT(GeneralSettingsTab::videoResolutionChanged(int)));
+        mCboVideoResoution->setCurrentIndex(iVideoResolution);
+
+        connect(mCboVideoResoution, SIGNAL(currentIndexChanged(int)), this, SLOT(videoResolutionChanged(int)));
         }
 
     return(mCboVideoResoution);
@@ -174,17 +166,17 @@ QLabel *GeneralSettingsTab::getVideoResolutionLabel()
 void GeneralSettingsTab::initControls() const
 {
     GeneralSettingsTab *ptrThis = const_cast<GeneralSettingsTab *>(this);
-    QGridLayout *layout = new QGridLayout(ptrThis);
+    QVBoxLayout *layout = new QVBoxLayout(ptrThis);
+    QFormLayout *subLayout = new QFormLayout(ptrThis);
 
-    layout->addWidget(ptrThis->getLanguageLabel(), 0, 0);
-    layout->addWidget(ptrThis->getLanguageComboBox(), 0, 1);
-    layout->addWidget(ptrThis->getVideoResolutionLabel(), 1, 0);
-    layout->addWidget(ptrThis->getVideoResolutionComboBox(), 1, 1);
-    layout->addWidget(ptrThis->getAudioVolumeLabel(), 2, 0);
-    layout->addWidget(ptrThis->getAudioVolumeSlider(), 2, 1);
-    layout->addWidget(ptrThis->getDisplayLabel(), 3, 0);
-    layout->addWidget(ptrThis->getDisplayComboBox(), 3, 1);
-    layout->addWidget(ptrThis->getPauseGameCheckBox(), 4, 0, 1, 2);
+    subLayout->addRow(ptrThis->getLanguageLabel(), ptrThis->getLanguageComboBox());
+    subLayout->addRow(ptrThis->getVideoResolutionLabel(), ptrThis->getVideoResolutionComboBox());
+    subLayout->addRow(ptrThis->getAudioVolumeLabel(), ptrThis->getAudioVolumeSlider());
+    subLayout->addRow(ptrThis->getDisplayLabel(), ptrThis->getDisplayComboBox());
+    subLayout->addRow(ptrThis->getPauseGameCheckBox());
+
+    layout->addItem(subLayout);
+    layout->addStretch();
 
     ptrThis->setLayout(layout);
 }
@@ -196,12 +188,19 @@ void GeneralSettingsTab::initTab() const
     initControls();
 }
 
-
-void GeneralSettingsTab::languageChanged(const int iLanguage)
+void GeneralSettingsTab::audioVolumeChanged(const int iVolume)
 {
-    QMap<int, QVariant> mapValues = getLanguageComboBox()->model()->itemData((QModelIndex()));
-    QVariant &refValue = mapValues[iLanguage];
-    SettingsModel::Language objLanguage = refValue.value<SettingsModel::Language>();
+    getSettingsModel().setAudioVolume(iVolume);
+}
+
+void GeneralSettingsTab::displayTypeChanged(const int iDisplayType)
+{
+    getSettingsModel().setDisplayType(static_cast<SettingsModel::DisplayType>(iDisplayType));
+}
+
+void GeneralSettingsTab::languageChanged(int iLanguage)
+{
+    SettingsModel::Language objLanguage = getLanguageComboBox()->itemData(iLanguage, Qt::DisplayRole).value<SettingsModel::Language>();
 
     getSettingsModel().setLanguage(objLanguage);
 }
@@ -213,9 +212,9 @@ void GeneralSettingsTab::pauseClicked()
 
 void GeneralSettingsTab::videoResolutionChanged(const int iVideoResolution)
 {
-    QMap<int, QVariant> mapValues = getVideoResolutionComboBox()->model()->itemData((QModelIndex()));
+    SettingsModel::VideoResolution objVideoResolution = getVideoResolutionComboBox()->itemData(iVideoResolution, Qt::DisplayRole).value<SettingsModel::VideoResolution>();
 
-    getSettingsModel().setVideoResolution((SettingsModel::VideoResolution &)(mapValues[iVideoResolution]));
+    getSettingsModel().setVideoResolution(objVideoResolution);
 }
 
 GeneralSettingsTab::GeneralSettingsTab(QWidget *parent)
@@ -235,11 +234,11 @@ GeneralSettingsTab::GeneralSettingsTab(QWidget *parent, const SettingsModel &ref
     ,   mObjAudioVolume(nullptr)
     ,   mRefModel(const_cast<SettingsModel &>(refModel))
 {
+    getSettingsModel().addObserver(new LanguageChangedObserver(getLanguageComboBox()));
+    getSettingsModel().addObserver(new VideoResolutionChangedObserver(getVideoResolutionComboBox()));
     getSettingsModel().addObserver(new AudioVolumeObserver(getAudioVolumeLabel()->getDisplayLabel(), getAudioVolumeSlider()));
     getSettingsModel().addObserver(new DisplayTypeChangedObserver(getDisplayComboBox()));
-    getSettingsModel().addObserver(new LanguageChangedObserver(getLanguageComboBox()));
-    getSettingsModel().addObserver(new PausedWhileInBackgroundObserver(getPauseGameCheckBox()));
-    //getSettingsModel().addObserver(new VideoResolutionChangedObserver(getVideoResolutionComboBox()));
+    //getSettingsModel().addObserver(new PausedWhileInBackgroundObserver(getPauseGameCheckBox()));
 
     initTab();
 }

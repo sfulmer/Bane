@@ -79,6 +79,8 @@ namespace net
                             QString toString() const;
                         };
                     private:
+                        static const QString mcsSettingsPath;
+
                         bool mbPauseWhileInBackground;
                         DisplayType meDisplayType;
                         static QList<Language> msLstLanguagesAvailable;
@@ -102,8 +104,8 @@ namespace net
                         SettingsModel::Language &getLanguage() const;
                         VideoResolution &getVideoResolution() const;
                         bool isPausedWhileInBackground() const;
-                        void load(const QString &sFilename);
-                        void save(const QString &sFilename);
+                        void load(const QString &sFilename = mcsSettingsPath);
+                        void save(const QString &sFilename = mcsSettingsPath);
                         void setAudioVolume(const unsigned uiAudioVolume);
                         void setControl(const InterfaceType &eInterface, const QString &sControl, const QString &sKey);
                         void setDisplayType(const DisplayType &eDisplayType);
