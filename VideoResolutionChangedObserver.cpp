@@ -30,9 +30,14 @@ void VideoResolutionChangedObserver::update(const Observable &refObservable, con
 {
     Q_UNUSED(sProperty);
 
-    QMap<int, QVariant> mapValues = getVideoResolutionsComboBox()->model()->itemData(QModelIndex());
     SettingsModel &refModel = static_cast<SettingsModel &>(const_cast<Observable &>(refObservable));
+    const QList<SettingsModel::VideoResolution> &lstAvailableVideoResolutions = refModel.getAvailableVideoResolutions();
+    const SettingsModel::VideoResolution &refComboBoxValue = lstAvailableVideoResolutions[getVideoResolutionsComboBox()->currentIndex()];
 
-    if(refModel.getVideoResolution() != ((SettingsModel::VideoResolution &)(mapValues[getVideoResolutionsComboBox()->currentIndex()])))
-        getVideoResolutionsComboBox()->setCurrentIndex(mapValues.key((QVariant &)(refModel.getVideoResolution())));
+    if(refModel.getVideoResolution() != refComboBoxValue)
+        {
+        SettingsModel::VideoResolution &refVideoResolutionToSet = refModel.getVideoResolution();
+
+        getVideoResolutionsComboBox()->setCurrentIndex(lstAvailableVideoResolutions.indexOf(refVideoResolutionToSet));
+        }
 }

@@ -2,8 +2,10 @@
 
 #include "Observable.h"
 #include <QComboBox>
+#include "SettingsModel.h"
 
 using namespace net::draconia::util;
+using net::draconia::games::bane::model::SettingsModel;
 
 namespace net
 {

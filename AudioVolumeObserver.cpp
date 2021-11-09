@@ -41,9 +41,12 @@ void AudioVolumeObserver::update(const Observable &refObservable, const QString 
 {
     Q_UNUSED(sProperty);
 
+    int iModelVolume = 0, iSliderValue = 0;
     SettingsModel &refModel = static_cast<SettingsModel &>(const_cast<Observable &>(refObservable));
 
-    if(static_cast<int>(refModel.getAudioVolume()) != getAudioVolumeSlider()->value())
+    iModelVolume = static_cast<int>(refModel.getAudioVolume());
+    iSliderValue = getAudioVolumeSlider()->value();
+    if(iModelVolume != iSliderValue)
         getAudioVolumeSlider()->setValue(refModel.getAudioVolume());
     if(static_cast<int>(refModel.getAudioVolume()) != getAudioVolumeLabel()->text())
        getAudioVolumeLabel()->setText(QString("%1").arg(refModel.getAudioVolume()));

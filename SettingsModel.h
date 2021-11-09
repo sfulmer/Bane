@@ -98,7 +98,9 @@ namespace net
 
                         unsigned getAudioVolume() const;
                         static QList<Language> &getAvailableLanguages();
+                        static QList<QString> getAvailableLanguagesAsStringList();
                         static QList<VideoResolution> &getAvailableVideoResolutions();
+                        static QList<QString> getAvailableVideoResolutionsAsStringList();
                         QMap<InterfaceType, QMap<QString, QString>> &getControlMap() const;
                         DisplayType &getDisplayType() const;
                         SettingsModel::Language &getLanguage() const;
@@ -122,6 +124,3 @@ namespace net
         }
     }
 }
-
-Q_DECLARE_METATYPE(net::draconia::games::bane::model::SettingsModel::Language);
-Q_DECLARE_METATYPE(net::draconia::games::bane::model::SettingsModel::VideoResolution);

@@ -25,9 +25,7 @@ SOURCES += \
     GameWindow.cpp \
     GeneralSettingsTab.cpp \
     Item.cpp \
-    ItemModel.cpp \
     LanguageChangedObserver.cpp \
-    LanguageComboBoxModel.cpp \
     LoadMenuModel.cpp \
     LoadMenuOption.cpp \
     LoadMenuRenderer.cpp \
@@ -68,9 +66,7 @@ HEADERS += \
     GameWindow.h \
     GeneralSettingsTab.h \
     Item.h \
-    ItemModel.h \
     LanguageChangedObserver.h \
-    LanguageComboBoxModel.h \
     LoadMenuModel.h \
     LoadMenuOption.h \
     LoadMenuRenderer.h \

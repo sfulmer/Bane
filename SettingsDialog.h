@@ -34,8 +34,8 @@ namespace net
                         QPushButton *getResetButton();
                         SettingsModel &getSettingsModel();
                         QTabWidget *getTabPanel();
-                        void initControls() const;
-                        void initDialog() const;
+                        void initControls();
+                        void initDialog();
                     public:
                         SettingsDialog(QWidget *parent, Qt::WindowFlags f = Qt::WindowFlags());
                         SettingsDialog(QWidget *parent, Qt::WindowFlags f, const SettingsModel &refSettingsModel);

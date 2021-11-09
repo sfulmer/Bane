@@ -239,7 +239,7 @@ QString SettingsModel::VideoResolution::toString() const
     return(QString("%1").arg(getWidth()) + "x" + QString("%1").arg(getHeight()));
 }
 
-const QString SettingsModel::mcsSettingsPath(QStandardPaths::locate(QStandardPaths::AppDataLocation, QString(), QStandardPaths::LocateDirectory) + "../../Bane/Settings.json");
+const QString SettingsModel::mcsSettingsPath(QStandardPaths::locate(QStandardPaths::DesktopLocation, QString(), QStandardPaths::LocateDirectory) + "Bane/Settings.json");
 
 QList<SettingsModel::Language> SettingsModel::msLstLanguagesAvailable;
 QList<SettingsModel::VideoResolution> SettingsModel::msLstVideoResolutionsAvailable;
@@ -327,9 +327,37 @@ QList<SettingsModel::Language> &SettingsModel::getAvailableLanguages()
     return(msLstLanguagesAvailable);
 }
 
+QList<QString> SettingsModel::getAvailableLanguagesAsStringList()
+{
+    QList<QString> lstData;
+
+    for(int iLength = getAvailableLanguages().length(), iLoop = 0; iLoop < iLength;iLoop++)
+        {
+        Language &refLanguage = getAvailableLanguages()[iLoop];
+
+        lstData.append(refLanguage.toString());
+        }
+
+    return(lstData);
+}
+
 QList<SettingsModel::VideoResolution> &SettingsModel::getAvailableVideoResolutions()
 {
     return(msLstVideoResolutionsAvailable);
+}
+
+QList<QString> SettingsModel::getAvailableVideoResolutionsAsStringList()
+{
+    QList<QString> lstData;
+
+    for(int iLength = getAvailableVideoResolutions().length(), iLoop = 0; iLoop < iLength;iLoop++)
+        {
+        VideoResolution &refVideoResolution = getAvailableVideoResolutions()[iLoop];
+
+        lstData.append(refVideoResolution.toString());
+        }
+
+    return(lstData);
 }
 
 QMap<SettingsModel::InterfaceType, QMap<QString, QString>> &SettingsModel::getControlMap() const
@@ -359,12 +387,6 @@ bool SettingsModel::isPausedWhileInBackground() const
 
 void SettingsModel::load(const QString &sFilename)
 {
-    DisplayType arrDisplayTypes[3];
-
-    arrDisplayTypes[0] = DisplayType::Borderless;
-    arrDisplayTypes[1] = DisplayType::FullScreen;
-    arrDisplayTypes[2] = DisplayType::Windowed;
-
     QFile file(sFilename);
 
     if(!file.open(QIODevice::ReadOnly))
@@ -378,8 +400,14 @@ void SettingsModel::load(const QString &sFilename)
     QJsonObject objGeneral = obj["General"].toObject();
 
     setAudioVolume(objGeneral["AudioVolume"].toInt());
-    setDisplayType(arrDisplayTypes[objGeneral["DisplayType"].toInt()]);
-    setLanguage(Language(objGeneral["Language"].toObject()["language"].toString(), objGeneral["Language"].toObject()["Region"].toString()));
+    setDisplayType(static_cast<DisplayType>(objGeneral["DisplayType"].toInt()));
+    {
+        const QJsonObject &refLanguage = objGeneral["Language"].toObject();
+        QString sLanguage = refLanguage["language"].toString();
+        QString sRegion = refLanguage["Region"].toString();
+
+        setLanguage(Language(sLanguage, sRegion));
+    }
     setPauseWhileInBackground(objGeneral["PausedWhileInBackground"].toBool(false));
     setVideoResolution(VideoResolution(objGeneral["VideoResolution"].toObject()["Width"].toInt(), objGeneral["VideoResolution"].toObject()["Height"].toInt()));
 
@@ -391,15 +419,21 @@ void SettingsModel::load(const QString &sFilename)
 void SettingsModel::save(const QString &sFilename)
 {
     QFile file(sFilename);
-    QJsonObject obj;
+    QJsonObject obj, objGeneral, objControls;
 
-    obj["AudioVolume"] = QJsonValue(static_cast<int>(getAudioVolume()));
-    obj["DisplayType"] = QJsonValue(getDisplayType());
-    obj["Language"] = QJsonValue(getLanguage().toJson());
-    obj["PauseWhenInBackground"] = isPausedWhileInBackground();
-    obj["VideoResolution"] = QJsonValue(getVideoResolution().toJson());
+    qDebug() << sFilename << " and " << (file.exists() ? "it exists":"it doesn't exist");
+
+    objGeneral["AudioVolume"] = QJsonValue(static_cast<int>(getAudioVolume()));
+    objGeneral["DisplayType"] = QJsonValue(getDisplayType());
+    objGeneral["Language"] = QJsonValue(getLanguage().toJson());
+    objGeneral["PauseWhenInBackground"] = isPausedWhileInBackground();
+    objGeneral["VideoResolution"] = QJsonValue(getVideoResolution().toJson());
+
+    obj["General"] = objGeneral;
 
     // Put the Controls stuff here
+
+    obj["Controls"] = objControls;
 
     if(!file.open(QIODevice::WriteOnly))
         return;

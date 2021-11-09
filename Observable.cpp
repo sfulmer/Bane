@@ -19,6 +19,16 @@ void Observable::addObserver(const Observer *ptrObserver)
     getObserversInternal().append(const_cast<Observer *>(static_cast<const Observer *>(ptrObserver)));
 }
 
+void Observable::clearObservers()
+{
+    getObserversInternal().clear();
+}
+
+void Observable::deleteObserver(Observer *ptrObserver)
+{
+    getObserversInternal().removeOne(ptrObserver);
+}
+
 const QList<Observer *> &Observable::getObservers()
 {
     return(getObserversInternal());

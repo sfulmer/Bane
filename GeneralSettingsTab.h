@@ -29,7 +29,7 @@ namespace net
                         QComboBox *mCboDisplay, *mCboLanguage, *mCboVideoResoution;
                         QLabel *mLblDisplay, *mLblLanguage, *mLblVideoResolution;
                         QSlider *mObjAudioVolume;
-                        SettingsModel &mRefModel;
+                        SettingsModel *mPtrModel;
                     protected:
                         AudioVolumeLabel *getAudioVolumeLabel();
                         QSlider *getAudioVolumeSlider();
@@ -52,6 +52,8 @@ namespace net
                     public:
                         GeneralSettingsTab(QWidget *parent);
                         GeneralSettingsTab(QWidget *parent, const SettingsModel &refModel);
+
+                        ~GeneralSettingsTab();
                     };
                 }
             }

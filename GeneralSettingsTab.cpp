@@ -2,7 +2,6 @@
 #include "BaneApp.h"
 #include "DisplayTypeChangedObserver.h"
 #include "GeneralSettingsTab.h"
-#include "ItemModel.h"
 #include "LanguageChangedObserver.h"
 #include "PausedWhileInBackgroundObserver.h"
 #include <QFormLayout>
@@ -11,9 +10,6 @@
 using namespace net::draconia::games::bane::ui;
 using namespace net::draconia::games::bane::ui::model;
 using namespace net::draconia::games::bane::ui::observers;
-
-extern template class net::draconia::games::bane::ui::model::ItemModel<SettingsModel::Language>;
-extern template class net::draconia::games::bane::ui::model::ItemModel<SettingsModel::VideoResolution>;
 
 AudioVolumeLabel *GeneralSettingsTab::getAudioVolumeLabel()
 {
@@ -34,6 +30,8 @@ QSlider *GeneralSettingsTab::getAudioVolumeSlider()
         mObjAudioVolume = new QSlider(Qt::Orientation::Horizontal, this);
 
         mObjAudioVolume->setAutoFillBackground(true);
+        mObjAudioVolume->setMaximum(100);
+        mObjAudioVolume->setMinimum(0);
         mObjAudioVolume->setTickInterval(1);
         mObjAudioVolume->setValue(getSettingsModel().getAudioVolume());
 
@@ -91,7 +89,7 @@ QComboBox *GeneralSettingsTab::getLanguageComboBox()
         {
         QList<SettingsModel::Language> lstLanguages(getSettingsModel().getAvailableLanguages());
         mCboLanguage = new QComboBox(this);
-        mCboLanguage->setModel(new ItemModel<SettingsModel::Language>(lstLanguages));
+        mCboLanguage->addItems(getSettingsModel().getAvailableLanguagesAsStringList());
 
         mCboLanguage->setCurrentIndex(lstLanguages.indexOf(getSettingsModel().getLanguage()));
 
@@ -130,7 +128,10 @@ QCheckBox *GeneralSettingsTab::getPauseGameCheckBox()
 
 SettingsModel &GeneralSettingsTab::getSettingsModel()
 {
-    return(mRefModel);
+    if(mPtrModel == nullptr)
+        mPtrModel = &static_cast<BaneApp *>(qApp)->getController().getSettingsModel();
+
+    return(*mPtrModel);
 }
 
 QComboBox *GeneralSettingsTab::getVideoResolutionComboBox()
@@ -139,7 +140,7 @@ QComboBox *GeneralSettingsTab::getVideoResolutionComboBox()
         {
         QList<SettingsModel::VideoResolution> lstVideoResolutions(getSettingsModel().getAvailableVideoResolutions());
         mCboVideoResoution = new QComboBox(this);
-        mCboVideoResoution->setModel(new ItemModel<SettingsModel::VideoResolution>(lstVideoResolutions));
+        mCboVideoResoution->addItems(getSettingsModel().getAvailableVideoResolutionsAsStringList());
 
         int iVideoResolution = lstVideoResolutions.indexOf(getSettingsModel().getVideoResolution());
 
@@ -200,9 +201,10 @@ void GeneralSettingsTab::displayTypeChanged(const int iDisplayType)
 
 void GeneralSettingsTab::languageChanged(int iLanguage)
 {
-    SettingsModel::Language objLanguage = getLanguageComboBox()->itemData(iLanguage, Qt::DisplayRole).value<SettingsModel::Language>();
+    SettingsModel::Language objLanguage = getSettingsModel().getAvailableLanguages()[iLanguage];
+    SettingsModel &refModel = getSettingsModel();
 
-    getSettingsModel().setLanguage(objLanguage);
+    refModel.setLanguage(objLanguage);
 }
 
 void GeneralSettingsTab::pauseClicked()
@@ -232,13 +234,18 @@ GeneralSettingsTab::GeneralSettingsTab(QWidget *parent, const SettingsModel &ref
     ,   mLblLanguage(nullptr)
     ,   mLblVideoResolution(nullptr)
     ,   mObjAudioVolume(nullptr)
-    ,   mRefModel(const_cast<SettingsModel &>(refModel))
+    ,   mPtrModel(&const_cast<SettingsModel &>(refModel))
 {
-    getSettingsModel().addObserver(new LanguageChangedObserver(getLanguageComboBox()));
-    getSettingsModel().addObserver(new VideoResolutionChangedObserver(getVideoResolutionComboBox()));
+    //getSettingsModel().addObserver(new LanguageChangedObserver(getLanguageComboBox()));
+    //getSettingsModel().addObserver(new VideoResolutionChangedObserver(getVideoResolutionComboBox()));
     getSettingsModel().addObserver(new AudioVolumeObserver(getAudioVolumeLabel()->getDisplayLabel(), getAudioVolumeSlider()));
     getSettingsModel().addObserver(new DisplayTypeChangedObserver(getDisplayComboBox()));
-    //getSettingsModel().addObserver(new PausedWhileInBackgroundObserver(getPauseGameCheckBox()));
+    getSettingsModel().addObserver(new PausedWhileInBackgroundObserver(getPauseGameCheckBox()));
 
     initTab();
+}
+
+GeneralSettingsTab::~GeneralSettingsTab()
+{
+    getSettingsModel().clearObservers();
 }

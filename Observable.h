@@ -29,6 +29,8 @@ namespace net
                 ~Observable();
 
                 void addObserver(const Observer *ptrObserver);
+                void clearObservers();
+                void deleteObserver(Observer *ptrObserver);
                 const QList<Observer *> &getObservers();
                 bool isChanged() const;
                 void notifyObservers(const QString &sProperty);

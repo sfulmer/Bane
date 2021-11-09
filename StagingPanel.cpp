@@ -11,8 +11,6 @@ void StagingPanel::doSettings()
     QDialog *dlg = new SettingsDialog(this, Qt::WindowFlags(), getController().getSettingsModel());
 
     dlg->exec();
-
-    delete dlg;
 }
 
 void StagingPanel::doStartGame()

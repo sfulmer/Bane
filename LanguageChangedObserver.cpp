@@ -30,15 +30,14 @@ void LanguageChangedObserver::update(const Observable &refObservable, const QStr
 {
     Q_UNUSED(sProperty);
 
-    QMap<int, QVariant> mapValues = getLanguageComboBox()->model()->itemData(QModelIndex());
     SettingsModel &refModel = static_cast<SettingsModel &>(const_cast<Observable &>(refObservable));
+    const QList<SettingsModel::Language> &lstAvailableLanguages = refModel.getAvailableLanguages();
+    const SettingsModel::Language &refComboBoxValue = lstAvailableLanguages[getLanguageComboBox()->currentIndex()];
 
-    if(refModel.getLanguage() != mapValues[getLanguageComboBox()->currentIndex()].value<SettingsModel::Language>())
+    if(refModel.getLanguage() != refComboBoxValue)
         {
-        QVariant toSet;
+        SettingsModel::Language &refLanguageToSet = refModel.getLanguage();
 
-        toSet.setValue(refModel.getLanguage());
-
-        getLanguageComboBox()->setCurrentIndex(mapValues.key(toSet));
+        getLanguageComboBox()->setCurrentIndex(lstAvailableLanguages.indexOf(refLanguageToSet));
         }
 }

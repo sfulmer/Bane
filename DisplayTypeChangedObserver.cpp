@@ -31,8 +31,8 @@ void DisplayTypeChangedObserver::update(const Observable &refObservable, const Q
     Q_UNUSED(sProperty);
 
     SettingsModel &refModel = static_cast<SettingsModel &>(const_cast<Observable &>(refObservable));
-    QMap<int, QVariant> mapValues = getDisplayTypeComboBox()->model()->itemData(QModelIndex());
+    SettingsModel::DisplayType eDisplayType = static_cast<SettingsModel::DisplayType>(getDisplayTypeComboBox()->currentIndex());
 
-    if(refModel.getDisplayType() != mapValues[getDisplayTypeComboBox()->currentIndex()])
-        getDisplayTypeComboBox()->setCurrentIndex(mapValues.key(refModel.getDisplayType(), -1));
+    if(refModel.getDisplayType() != eDisplayType)
+        getDisplayTypeComboBox()->setCurrentIndex(eDisplayType);
 }

@@ -14,6 +14,8 @@ void SettingsDialog::doCancel() const
 
 void SettingsDialog::doOk()
 {
+    getSettingsModel().save();
+
     accept();
 }
 
@@ -74,26 +76,28 @@ QTabWidget *SettingsDialog::getTabPanel()
     return(mTabBar);
 }
 
-void SettingsDialog::initControls() const
+void SettingsDialog::initControls()
 {
-    SettingsDialog *ptrThis = const_cast<SettingsDialog *>(this);
-    QGridLayout *layout = new QGridLayout(ptrThis);
+    QGridLayout *layout = new QGridLayout(this);
 
-    layout->addWidget(ptrThis->getTabPanel(), 0, 0, 1, 3);
-    layout->addWidget(ptrThis->getCancelButton(), 1, 0, 1, 1);
-    layout->addWidget(ptrThis->getOkButton(), 1, 1, 1, 1);
-    layout->addWidget(ptrThis->getResetButton(), 1, 2, 1, 1);
+    layout->addWidget(getTabPanel(), 0, 0, 1, 3);
+    layout->addWidget(getCancelButton(), 1, 0, 1, 1);
+    layout->addWidget(getOkButton(), 1, 1, 1, 1);
+    layout->addWidget(getResetButton(), 1, 2, 1, 1);
 
-    ptrThis->setLayout(layout);
+    setLayout(layout);
 }
 
-void SettingsDialog::initDialog() const
+void SettingsDialog::initDialog()
 {
-    const_cast<SettingsDialog *>(this)->setMinimumSize(QSize(500, 475));
+    setMinimumSize(QSize(500, 475));
 
-    const_cast<SettingsDialog *>(this)->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
+    setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
+    setAttribute(Qt::WA_DeleteOnClose);
 
     initControls();
+
+
 }
 
 SettingsDialog::SettingsDialog(QWidget *parent, Qt::WindowFlags f)

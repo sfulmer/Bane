@@ -1,5 +1,5 @@
 #include "BaneApp.h"
-#include <QMetaType>
+//ww#include <QMetaType>
 #include <QtGamepad/QGamepadManager>
 #include <QWindow>
 #include "SettingsModel.h"
@@ -33,9 +33,6 @@ BaneApp::BaneApp(int argc, char *argv[])
     ,   mObjController(*this)
 {
     setArguments(argc, argv);
-
-    QMetaType::registerConverter(&SettingsModel::Language::toString);
-    QMetaType::registerConverter(&SettingsModel::VideoResolution::toString);
 }
 
 int BaneApp::exec()
