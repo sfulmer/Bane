@@ -26,7 +26,7 @@ namespace net
 
                         AudioVolumeLabel *mLblAudioVolume;
                         QCheckBox *mChkPauseGame;
-                        QComboBox *mCboDisplay, *mCboLanguage, *mCboVideoResoution;
+                        QComboBox *mCboDisplay, *mCboLanguage, *mCboVideoResolution;
                         QLabel *mLblDisplay, *mLblLanguage, *mLblVideoResolution;
                         QSlider *mObjAudioVolume;
                         SettingsModel *mPtrModel;
@@ -41,8 +41,8 @@ namespace net
                         SettingsModel &getSettingsModel();
                         QComboBox *getVideoResolutionComboBox();
                         QLabel *getVideoResolutionLabel();
-                        void initControls() const;
-                        void initTab() const;
+                        void initControls();
+                        void initTab();
                     protected slots:
                         void audioVolumeChanged(const int iVolume);
                         void displayTypeChanged(const int iDisplayType);

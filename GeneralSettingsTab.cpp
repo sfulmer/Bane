@@ -87,11 +87,14 @@ QComboBox *GeneralSettingsTab::getLanguageComboBox()
 {
     if(mCboLanguage == nullptr)
         {
-        QList<SettingsModel::Language> lstLanguages(getSettingsModel().getAvailableLanguages());
         mCboLanguage = new QComboBox(this);
+
         mCboLanguage->addItems(getSettingsModel().getAvailableLanguagesAsStringList());
 
-        mCboLanguage->setCurrentIndex(lstLanguages.indexOf(getSettingsModel().getLanguage()));
+        SettingsModel::Language &refLanguage = getSettingsModel().getLanguage();
+        int iLanguageIndex = getSettingsModel().getAvailableLanguages().indexOf(refLanguage);
+
+        mCboLanguage->setCurrentIndex(iLanguageIndex);
 
         connect(mCboLanguage, SIGNAL(currentIndexChanged(int)), this, SLOT(languageChanged(int)));
         }
@@ -104,6 +107,7 @@ QLabel *GeneralSettingsTab::getLanguageLabel()
     if(mLblLanguage == nullptr)
         {
         mLblLanguage = new QLabel("&Language:", this);
+
         mLblLanguage->setAutoFillBackground(false);
         mLblLanguage->setBuddy(getLanguageComboBox());
         }
@@ -134,22 +138,21 @@ SettingsModel &GeneralSettingsTab::getSettingsModel()
     return(*mPtrModel);
 }
 
+
 QComboBox *GeneralSettingsTab::getVideoResolutionComboBox()
 {
-    if(mCboVideoResoution == nullptr)
+    if(mCboVideoResolution == nullptr)
         {
-        QList<SettingsModel::VideoResolution> lstVideoResolutions(getSettingsModel().getAvailableVideoResolutions());
-        mCboVideoResoution = new QComboBox(this);
-        mCboVideoResoution->addItems(getSettingsModel().getAvailableVideoResolutionsAsStringList());
+        mCboVideoResolution = new QComboBox(this);
 
-        int iVideoResolution = lstVideoResolutions.indexOf(getSettingsModel().getVideoResolution());
+        mCboVideoResolution->addItems(getSettingsModel().getAvailableVideoResolutionsAsStringList());
 
-        mCboVideoResoution->setCurrentIndex(iVideoResolution);
+        mCboVideoResolution->setCurrentIndex(getSettingsModel().getAvailableVideoResolutions().indexOf(getSettingsModel().getVideoResolution()));
 
-        connect(mCboVideoResoution, SIGNAL(currentIndexChanged(int)), this, SLOT(videoResolutionChanged(int)));
+        connect(mCboDisplay, SIGNAL(currentIndexChanged(int)), this, SLOT(videoResolutionChanged(int)));
         }
 
-    return(mCboVideoResoution);
+    return(mCboVideoResolution);
 }
 
 QLabel *GeneralSettingsTab::getVideoResolutionLabel()
@@ -157,6 +160,7 @@ QLabel *GeneralSettingsTab::getVideoResolutionLabel()
     if(mLblVideoResolution == nullptr)
         {
         mLblVideoResolution = new QLabel("&Video Resolution:", this);
+
         mLblVideoResolution->setAutoFillBackground(false);
         mLblVideoResolution->setBuddy(getVideoResolutionComboBox());
         }
@@ -164,27 +168,26 @@ QLabel *GeneralSettingsTab::getVideoResolutionLabel()
     return(mLblVideoResolution);
 }
 
-void GeneralSettingsTab::initControls() const
+void GeneralSettingsTab::initControls()
 {
-    GeneralSettingsTab *ptrThis = const_cast<GeneralSettingsTab *>(this);
-    QVBoxLayout *layout = new QVBoxLayout(ptrThis);
-    QFormLayout *subLayout = new QFormLayout(ptrThis);
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    QFormLayout *subLayout = new QFormLayout(this);
 
-    subLayout->addRow(ptrThis->getLanguageLabel(), ptrThis->getLanguageComboBox());
-    subLayout->addRow(ptrThis->getVideoResolutionLabel(), ptrThis->getVideoResolutionComboBox());
-    subLayout->addRow(ptrThis->getAudioVolumeLabel(), ptrThis->getAudioVolumeSlider());
-    subLayout->addRow(ptrThis->getDisplayLabel(), ptrThis->getDisplayComboBox());
-    subLayout->addRow(ptrThis->getPauseGameCheckBox());
+    subLayout->addRow(getLanguageLabel(), getLanguageComboBox());
+    subLayout->addRow(getVideoResolutionLabel(), getVideoResolutionComboBox());
+    subLayout->addRow(getAudioVolumeLabel(), getAudioVolumeSlider());
+    subLayout->addRow(getDisplayLabel(), getDisplayComboBox());
+    subLayout->addRow(getPauseGameCheckBox());
 
     layout->addItem(subLayout);
     layout->addStretch();
 
-    ptrThis->setLayout(layout);
+    setLayout(layout);
 }
 
-void GeneralSettingsTab::initTab() const
+void GeneralSettingsTab::initTab()
 {
-    const_cast<GeneralSettingsTab *>(this)->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
+    setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
 
     initControls();
 }
@@ -199,12 +202,13 @@ void GeneralSettingsTab::displayTypeChanged(const int iDisplayType)
     getSettingsModel().setDisplayType(static_cast<SettingsModel::DisplayType>(iDisplayType));
 }
 
-void GeneralSettingsTab::languageChanged(int iLanguage)
+void GeneralSettingsTab::languageChanged(const int iLanguage)
 {
-    SettingsModel::Language objLanguage = getSettingsModel().getAvailableLanguages()[iLanguage];
-    SettingsModel &refModel = getSettingsModel();
+    QList<SettingsModel::Language> lstLanguages = getSettingsModel().getAvailableLanguages();
+    SettingsModel::Language &refLanguage = lstLanguages[iLanguage], &refSetLanguage = getSettingsModel().getLanguage();
 
-    refModel.setLanguage(objLanguage);
+    if(refLanguage != refSetLanguage)
+        getSettingsModel().setLanguage(refLanguage);
 }
 
 void GeneralSettingsTab::pauseClicked()
@@ -214,9 +218,10 @@ void GeneralSettingsTab::pauseClicked()
 
 void GeneralSettingsTab::videoResolutionChanged(const int iVideoResolution)
 {
-    SettingsModel::VideoResolution objVideoResolution = getVideoResolutionComboBox()->itemData(iVideoResolution, Qt::DisplayRole).value<SettingsModel::VideoResolution>();
+    QList<SettingsModel::VideoResolution> lstVideoResolutions = getSettingsModel().getAvailableVideoResolutions();
 
-    getSettingsModel().setVideoResolution(objVideoResolution);
+    if(lstVideoResolutions[iVideoResolution] != getSettingsModel().getVideoResolution())
+        getSettingsModel().setVideoResolution(lstVideoResolutions[iVideoResolution]);
 }
 
 GeneralSettingsTab::GeneralSettingsTab(QWidget *parent)
@@ -229,18 +234,19 @@ GeneralSettingsTab::GeneralSettingsTab(QWidget *parent, const SettingsModel &ref
     ,   mChkPauseGame(nullptr)
     ,   mCboDisplay(nullptr)
     ,   mCboLanguage(nullptr)
-    ,   mCboVideoResoution(nullptr)
+    ,   mCboVideoResolution(nullptr)
     ,   mLblDisplay(nullptr)
     ,   mLblLanguage(nullptr)
     ,   mLblVideoResolution(nullptr)
     ,   mObjAudioVolume(nullptr)
     ,   mPtrModel(&const_cast<SettingsModel &>(refModel))
 {
-    //getSettingsModel().addObserver(new LanguageChangedObserver(getLanguageComboBox()));
-    //getSettingsModel().addObserver(new VideoResolutionChangedObserver(getVideoResolutionComboBox()));
+    getSettingsModel().addObserver(new LanguageChangedObserver(getLanguageComboBox()));
     getSettingsModel().addObserver(new AudioVolumeObserver(getAudioVolumeLabel()->getDisplayLabel(), getAudioVolumeSlider()));
     getSettingsModel().addObserver(new DisplayTypeChangedObserver(getDisplayComboBox()));
     getSettingsModel().addObserver(new PausedWhileInBackgroundObserver(getPauseGameCheckBox()));
+    getSettingsModel().addObserver(new VideoResolutionChangedObserver(getVideoResolutionComboBox()));
+
 
     initTab();
 }

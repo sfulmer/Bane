@@ -404,12 +404,21 @@ void SettingsModel::load(const QString &sFilename)
     {
         const QJsonObject &refLanguage = objGeneral["Language"].toObject();
         QString sLanguage = refLanguage["language"].toString();
-        QString sRegion = refLanguage["Region"].toString();
+        QString sRegion = refLanguage["region"].toString();
 
         setLanguage(Language(sLanguage, sRegion));
     }
-    setPauseWhileInBackground(objGeneral["PausedWhileInBackground"].toBool(false));
-    setVideoResolution(VideoResolution(objGeneral["VideoResolution"].toObject()["Width"].toInt(), objGeneral["VideoResolution"].toObject()["Height"].toInt()));
+    setPauseWhileInBackground(objGeneral["PauseWhenInBackground"].toBool());
+
+    {
+        int iHeight, iId, iWidth;
+        const QJsonObject &refVideoResolution = objGeneral["VideoResolution"].toObject();
+        iWidth = refVideoResolution["width"].toInt();
+        iHeight = refVideoResolution["height"].toInt();
+        iId = refVideoResolution["id"].toInt();
+
+        setVideoResolution(SettingsModel::VideoResolution(iId, iWidth, iHeight));
+    }
 
     //handle Control stuff
 
