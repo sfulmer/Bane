@@ -8,6 +8,16 @@
 
 using namespace net::draconia::games::bane::ui;
 
+void StagingWindow::closeEvent(QCloseEvent *event)
+{
+    Q_UNUSED(event);
+
+    if(getGameWindow()->isVisible())
+        getGameWindow()->close();
+    if(getSettingsDialog()->isVisible())
+        getSettingsDialog()->reject();
+}
+
 BaneController &StagingWindow::getController() const
 {
     return(mRefBaneController);
@@ -50,4 +60,14 @@ StagingWindow::StagingWindow(QWidget *parent, const BaneController &refControlle
     ,   mPnlStaging(nullptr)
 {
     initWindow();
+}
+
+GameWindow *StagingWindow::getGameWindow()
+{
+    return(getStagingPanel()->getGameWindow());
+}
+
+SettingsDialog *StagingWindow::getSettingsDialog()
+{
+    return(getStagingPanel()->getSettingsDialog());
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BaneController.h"
+#include <QCloseEvent>
 #include<QWidget>
 #include "StagingPanel.h"
 
@@ -23,6 +24,7 @@ namespace net
                         BaneController &mRefBaneController;
                         StagingPanel *mPnlStaging;
                     protected:
+                        virtual void closeEvent(QCloseEvent *event);
                         BaneController &getController() const;
                         StagingPanel *getStagingPanel();
                         void initControls() const;
@@ -30,6 +32,9 @@ namespace net
                     public:
                         StagingWindow(QWidget *parent);
                         StagingWindow(QWidget *parent, const BaneController &refController);
+
+                        GameWindow *getGameWindow();
+                        SettingsDialog *getSettingsDialog();
                     };
                 }
             }

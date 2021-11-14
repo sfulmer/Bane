@@ -205,20 +205,35 @@ void GamePanel::keyPressEvent(QKeyEvent *event)
         {
         case Qt::Key_Enter:
         case Qt::Key_Return:
+            if(isInLoadingMenu())
+                qDebug() << "I got here and the program is in a menu";
+
             if(!isInLoadingMenu())
+                {
+                qDebug() << "I got here and activating menu";
+
                 setInLoadingMenu(true);
+
+                if(isInLoadingMenu())
+                    qDebug() << "The menu is active!";
+                }
             else
-                switch(getMenu().getModel().getSelectedIndex())
+                {
+                int iSelectedIndex = getMenu().getModel().getSelectedIndex();
+
+                qDebug() << "Selected Index = " << iSelectedIndex;
+
+                switch(iSelectedIndex)
                     {
                     case 0:
                         start();
                     case 1:
-                    case 2:
                         break;
-                    case 3:
+                    case 2:
                         getController().exit();
                         break;
                     }
+                }
 
             repaint();
 

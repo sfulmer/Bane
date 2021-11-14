@@ -1,8 +1,10 @@
 #pragma once
 
 #include "BaneController.h"
+#include "GameWindow.h"
 #include<QPushButton>
 #include <QWidget>
+#include "SettingsDialog.h"
 
 using net::draconia::games::bane::BaneController;
 
@@ -21,7 +23,9 @@ namespace net
                         Q_OBJECT
 
                         BaneController &mRefBaneController;
+                        GameWindow *mWndGame;
                         QPushButton *mBtnSettings, *mBtnStartGame;
+                        SettingsDialog *mDlgSettings;
                     protected:
                         void doSettings();
                         void doStartGame();
@@ -33,6 +37,9 @@ namespace net
                     public:
                         StagingPanel(QWidget *parent);
                         StagingPanel(QWidget *parent, const BaneController &refController);
+
+                        GameWindow *getGameWindow();
+                        SettingsDialog *getSettingsDialog();
                     };
                 }
             }

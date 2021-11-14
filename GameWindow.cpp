@@ -78,7 +78,15 @@ void GameWindow::initMenus()
 
 void GameWindow::initWindow()
 {
+    SettingsModel &refModel = getController().getSettingsModel();
+    SettingsModel::VideoResolution &refVideoResolution = refModel.getVideoResolution();
+
     setWindowTitle("Bane");
+
+    if(refModel.getDisplayType() == SettingsModel::DisplayType::Borderless)
+        setWindowFlag(Qt::FramelessWindowHint);
+
+    resize(refVideoResolution.getWidth(), refVideoResolution.getHeight());
 
     initControls();
     initMenus();

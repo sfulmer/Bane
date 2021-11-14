@@ -9,7 +9,7 @@ LoadMenuRenderer::LoadMenuRenderer()
 {
     mObjModel.addOption(LoadMenuOption(0,"New Game", true));
     mObjModel.addOption(LoadMenuOption(1, "Load Game", true));
-    mObjModel.addOption(LoadMenuOption(3, "Exit", true));
+    mObjModel.addOption(LoadMenuOption(2, "Exit", true));
 }
 
 LoadMenuRenderer::LoadMenuRenderer(const LoadMenuModel &refModel)
