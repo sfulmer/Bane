@@ -35,6 +35,9 @@ SOURCES += \
     Party.cpp \
     PausedWhileInbackgroundObserver.cpp \
     Point.cpp \
+    Renderable.cpp \
+    SavePoint.cpp \
+    Scene.cpp \
     SettingsDialog.cpp \
     SettingsModel.cpp \
     Spell.cpp \
@@ -76,6 +79,9 @@ HEADERS += \
     Party.h \
     PausedWhileInBackgroundObserver.h \
     Point.h \
+    Renderable.h \
+    SavePoint.h \
+    Scene.h \
     SettingsDialog.h \
     SettingsModel.h \
     Spell.h \
