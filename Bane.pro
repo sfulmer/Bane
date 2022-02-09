@@ -16,6 +16,7 @@ SOURCES += \
     AudioVolumeObserver.cpp \
     BaneApp.cpp \
     BaneController.cpp \
+    BeanRepository.cpp \
     Character.cpp \
     ControlsTab.cpp \
     DisplayTypeChangedObserver.cpp \
@@ -26,8 +27,7 @@ SOURCES += \
     GeneralSettingsTab.cpp \
     Item.cpp \
     LanguageChangedObserver.cpp \
-    LoadMenuModel.cpp \
-    LoadMenuOption.cpp \
+    LoadMenu.cpp \
     LoadMenuRenderer.cpp \
     Menu.cpp \
     MenuOption.cpp \
@@ -46,6 +46,7 @@ SOURCES += \
     StagingWindow.cpp \
     StatusEffect.cpp \
     Target.cpp \
+    TitleScene.cpp \
     VideoResolutionChangedObserver.cpp \
     Weapon.cpp \
     main.cpp \
@@ -60,6 +61,7 @@ HEADERS += \
     BaneApp.h \
     BaneController.h \
     BaneMainWindow.h \
+    BeanRepository.h \
     Character.h \
     ControlsTab.h \
     DisplayTypeChangedObserver.h \
@@ -70,8 +72,7 @@ HEADERS += \
     GeneralSettingsTab.h \
     Item.h \
     LanguageChangedObserver.h \
-    LoadMenuModel.h \
-    LoadMenuOption.h \
+    LoadMenu.h \
     LoadMenuRenderer.h \
     Menu.h \
     MenuOption.h \
@@ -90,6 +91,7 @@ HEADERS += \
     StagingWindow.h \
     StatusEffect.h \
     Target.h \
+    TitleScene.h \
     VideoResolutionChangedObserver.h \
     Weapon.h
 
