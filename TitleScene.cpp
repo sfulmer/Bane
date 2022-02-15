@@ -2,6 +2,11 @@
 
 using namespace net::draconia::games::bane::ui;
 
+int TitleScene::getNextScene() const
+{
+    return(1);
+}
+
 QFont TitleScene::getTitleFont()
 {
     return(mFontTitle);

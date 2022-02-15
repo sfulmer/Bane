@@ -22,9 +22,13 @@ namespace net
                 {
                     class Scene : public Observable, public Renderable
                     {
+                    public:
+                        enum States {Showing, Exiting};
+                    private:
                         QImage *mImgScene;
                         QList<Party> mLstParties;
                         QList<SavePoint> mLstSavePoints;
+                        States meState;
                     protected:
                         QList<Party> &getPartiesInternal() const;
                         QList<SavePoint> &getSavePointsInternal() const;
@@ -37,12 +41,24 @@ namespace net
 
                         void addParty(const Party &refParty);
                         void addSavePoint(const SavePoint &refSavePoint);
+                        void connectedGamepadsChanged();
+                        void gamepadLeftXAxisTilted(double dValue);
+                        void gamepadLeftYAxisTilted(double dValue);
+                        void gamepadDownPressed(const bool bPressed);
+                        void gamepadLeftPressed(const bool bPressed);
+                        void gamepadRightPressed(const bool bPressed);
+                        void gamepadStartPressed(const bool bPressed);
+                        void gamepadUpPressed(const bool bPressed);
+                        virtual int getNextScene() const = 0;
                         const QList<Party> &getParties() const;
                         const QList<SavePoint> &getSavePoints() const;
                         QImage *getSceneImage() const;
+                        States getState() const;
                         void removeParty(const Party &refParty);
                         void removeSavePoint(const SavePoint &refSavePoint);
                         void setSceneImage(const QImage *imgScene);
+                        void setState(const States eState);
+                        virtual int showScene(const QPainter &refPainter);
                     };
                 }
             }

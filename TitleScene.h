@@ -22,6 +22,7 @@ namespace net
                         QImage mImgTitle;
                         LoadMenu mMnuLoad;
                     protected:
+                        virtual int getNextScene() const;
                         QFont getTitleFont();
                         QImage getTitleImage();
                         LoadMenu &getLoadMenu();

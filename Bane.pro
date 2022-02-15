@@ -21,6 +21,7 @@ SOURCES += \
     ControlsTab.cpp \
     DisplayTypeChangedObserver.cpp \
     Enemy.cpp \
+    Engine.cpp \
     GameModel.cpp \
     GamePanel.cpp \
     GameWindow.cpp \
@@ -28,7 +29,6 @@ SOURCES += \
     Item.cpp \
     LanguageChangedObserver.cpp \
     LoadMenu.cpp \
-    LoadMenuRenderer.cpp \
     Menu.cpp \
     MenuOption.cpp \
     Observable.cpp \
@@ -66,6 +66,7 @@ HEADERS += \
     ControlsTab.h \
     DisplayTypeChangedObserver.h \
     Enemy.h \
+    Engine.h \
     GameModel.h \
     GamePanel.h \
     GameWindow.h \
@@ -73,7 +74,6 @@ HEADERS += \
     Item.h \
     LanguageChangedObserver.h \
     LoadMenu.h \
-    LoadMenuRenderer.h \
     Menu.h \
     MenuOption.h \
     Observable.h \

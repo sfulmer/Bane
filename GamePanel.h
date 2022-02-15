@@ -2,7 +2,7 @@
 
 #include "GameModel.h"
 #include "BaneController.h"
-#include "LoadMenuRenderer.h"
+#include "LoadMenu.h"
 #include <QFont>
 #include <QtGamepad/QGamepadManager>
 #include <QImage>
@@ -31,7 +31,7 @@ namespace net
                         bool mbInLoadingMenu;
                         QGamepad *mPtrGamepad;
                         QGamepadManager *mPtrManager;
-                        LoadMenuRenderer mObjMenu;
+                        LoadMenu mObjMenu;
                         qint64 miFrame;
                         QSharedPointer<QFont> mPtrTitleFont;
                         QTimer *mTimerEvents;
